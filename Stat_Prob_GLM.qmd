@@ -1,0 +1,1280 @@
+---
+title: "Statistical Problems in GLM"
+date: today
+author: "Jiachen Ai"
+format:
+  html:
+    theme: cosmo
+    embed-resources: true
+    number-sections: false
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+knitr:
+  opts_chunk: 
+    cache: false    
+    echo: true
+    fig.align: 'center'
+    fig.width: 12
+    fig.height: 4
+    message: FALSE
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+
+# Binomial model
+
+- We model $Y_i$ as a Binomial random variable with batch size $m_i$ and "success" probability $p_i$
+$$
+\mathbb{P}(Y_i = y_i) = \binom{m_i}{y_i} p_i^{y_i} (1 - p_i)^{m_i - y_i}.
+$$
+
+- The parameter $p_i$ is linked to the predictors $X_1, \ldots, X_{q}$ via an **inverse link function**
+$$
+p_i = \frac{e^{\eta_i}}{1 + e^{\eta_i}},
+$$
+where $\eta_i$ is the **linear predictor** or **systematic component**
+$$
+\eta_i = \beta_0 + \beta_1 x_{i1} + \cdots + \beta_{q} x_{iq} = \mathbf{x}_i^T \boldsymbol{\beta}
+$$
+
+- The log-likelihood is
+\begin{eqnarray*}
+\ell(\boldsymbol{\beta}) &=& \sum_{i=1}^n \left[ y_i \log p_i + (m_i - y_i) \log (1 - p_i) + \log \binom{m_i}{y_i} \right] \\
+&=& \sum_{i=1}^n \left[ y_i \eta_i - m_i \log ( 1 + e^{\eta_i}) + \log \binom{m_i}{y_i} \right] \\
+&=& \sum_{i=1}^n \left[ y_i \cdot \mathbf{x}_i^T \boldsymbol{\beta} - m_i \log ( 1 + e^{\mathbf{x}_i^T \boldsymbol{\beta}}) + \log \binom{m_i}{y_i} \right].
+\end{eqnarray*}
+
+## Binomial model vs Binomial model
+- The Bernoulli model in ELMR 2 is a special case with all batch sizes $m_i = 1$. 
+
+- Conversely, the Binomial model is equivalent to a Bernoulli model with $\sum_i m_i$ observations, or a Bernoulli model with observation weights $(y_i, m_i - y_i)$. 
+
+
+
+
+- Write out the log-likelihood for above model and show it is equivalent to the Binomial model and Bernoulli model with weights.
+
+\newline
+For binomial model, the log-likelihood is given by
+
+$$
+\begin{eqnarray*}
+\ell(\boldsymbol{\beta}, y_i) &=& \log \left( \prod_{i=1}^n \binom{m_i}{y_i} p_i^{y_i} (1 - p_i)^{m_i - y_i} \right) \\
+&=& \sum_{i=1}^n \left[ \log \binom{m_i}{y_i} + y_i \log p_i + (m_i - y_i) \log (1 - p_i) \right] \\
+&=& \sum_{i=1}^n \left[ \log \binom{m_i}{y_i} + y_i \eta_i - m_i \log ( 1 + e^{\eta_i}) \right] \\
+&=& \sum_{i=1}^n \left[ \log \binom{m_i}{y_i} + y_i \mathbf{x}_i^T \boldsymbol{\beta} - m_i \log ( 1 + e^{\mathbf{x}_i^T \boldsymbol{\beta}}) \right].
+\end{eqnarray*}
+$$
+
+For Bernoulli model with weights, the log-likelihood is given by (assuming that the weights for $p_i$ are $y_i$ and for $1 - p_i$ are $m_i - y_i$)
+
+$$
+\begin{eqnarray*}
+\ell(\boldsymbol{\beta}, y_i) &=& \log \left( \prod_{i=1}^n p_i^{y_i} (1 - p_i)^{m_i - y_i} \right) \\
+&=& \sum_{i=1}^n \left[ y_i \log p_i + (m_i - y_i) \log (1 - p_i) \right] \\
+&=& \sum_{i=1}^n \left[ y_i \eta_i - m_i \log ( 1 + e^{\eta_i}) \right] \\
+&=& \sum_{i=1}^n \left[ y_i \mathbf{x}_i^T \boldsymbol{\beta} - m_i \log ( 1 + e^{\mathbf{x}_i^T \boldsymbol{\beta}}) \right].
+\end{eqnarray*}
+$$
+
+Suppose that there are $n$ times $m_i$ trials
+And suppose the dichotomous outcome is $y_{ij}$ for $j = 1, \ldots, m_i$.
+Then the log-likelihood for the binomial model is given by
+
+$$
+\begin{eqnarray*}
+\ell(\boldsymbol{\beta}, y_{ij}) &=& \log \left( \prod_{i=1}^n \prod_{j=1}^{m_i} p_i^{y_{ij}} (1 - p_i)^{1 - y_{ij}} \right) \\
+&=& \sum_{i=1}^n \sum_{j=1}^{m_i} \left[ y_{ij} \log p_i + (1 - y_{ij}) \log (1 - p_i) \right] \\
+&=& \sum_{i=1}^n \sum_{j=1}^{m_i} \left[ y_{ij} \eta_i - \log ( 1 + e^{\eta_i}) \right] \\
+&=& \sum_{i=1}^n \sum_{j=1}^{m_i} \left[ y_{ij} \mathbf{x}_i^T \boldsymbol{\beta} - \log ( 1 + e^{\mathbf{x}_i^T \boldsymbol{\beta}}) \right]\\
+&=& \sum_{i=1}^n \left[ \sum_{j=1}^{m_i} y_{ij} \mathbf{x}_i^T \boldsymbol{\beta} - m_i \log ( 1 + e^{\mathbf{x}_i^T \boldsymbol{\beta}}) \right]\\
+&=& \sum_{i=1}^n \left[ \mathbf{x}_i^T \boldsymbol{\beta} \sum_{j=1}^{m_i} y_{ij} - m_i \log ( 1 + e^{\mathbf{x}_i^T \boldsymbol{\beta}}) \right]\\
+&=& \sum_{i=1}^n \left[ \mathbf{x}_i^T \boldsymbol{\beta} y_i - m_i \log ( 1 + e^{\mathbf{x}_i^T \boldsymbol{\beta}}) \right]
+\end{eqnarray*}
+$$
+Since the log-likelihood for the binomial model is equivalent to the log-likelihood for the Bernoulli model with weights, the two models are equivalent.
+
+And even if the log-likelihood function for the binomial model is different from the Bernoulli model with weights and the bernoulli model, due to the fact that when using MLE, the log-likelihood function is maximized, and the constatnt term does not affect the maximization. Hence, the models are equivalent.
+
+
+# Odds ratios
+
+Consider a $2 \times 2$ contingency table from a prospective study in
+which people who were or were not exposed to some pollutant are followed
+up and, after several years, categorized according to the presense or
+absence of a disease. Following table shows the probabilities for each
+cell. The odds of disease for either exposure group is
+$O_i = \pi_i / (1 - \pi_i)$, for $i = 1,2$, and so the odds ratio is $$
+\phi = \frac{O_1}{O_2} = \frac{\pi_1(1 - \pi_2)}{\pi_2 (1 - \pi_1)}
+$$ is a measure of the relative likelihood of disease for the exposed
+and not exposed groups.
+
+|             | Diseased | Not diseased |
+|:-----------:|----------|--------------|
+|   Exposed   | $\pi_1$  | $1 - \pi_1$  |
+| Not exposed | $\pi_2$  | $1 - \pi_2$  |
+
+## 1
+
+For the simple logistic model 
+
+$$
+\pi_i = \frac{e^{\beta_i}}{1 + e^{\beta_i}}, 
+$$ 
+
+show that if there is no difference between the exposed and not
+exposed groups (i.e., $\beta_1 = \beta_2$), then $\phi = 1$.
+
+### Answer:
+
+$$
+\begin{aligned}
+\because \pi_i &= \frac{e^{\beta_i}}{1 + e^{\beta_i}} \\
+\therefore 
+\frac{1}{\pi_i} &= \frac{1 + e^{\beta_i}}{e^{\beta_i}} \\ &= \frac{1}{e^{\beta_i}} + 1 \\ 
+so, \frac{1}{e^{\beta_i}} &= \frac{1}{\pi_i} - 1 \\
+e^{\beta_i} &= \frac{\pi_i}{1 - \pi_i} \\
+\beta_i &= \log \left( \frac{\pi_i}{1 - \pi_i} \right) \\
+\therefore \beta_1 - \beta_2 &= \log \left( \frac{\pi_1}{1 - \pi_1} \right) - \log \left( \frac{\pi_2}{1 - \pi_2} \right) \\
+&= \log \left( \frac{\pi_1(1 - \pi_2)}{\pi_2 (1 - \pi_1)} \right) \\
+\because \beta_1 = \beta_2 \\
+\therefore \phi &= \frac{\pi_1(1 - \pi_2)}{\pi_2 (1 - \pi_1)} \ = e^{\beta_1 - \beta_2}\ = e^0 = 1\\
+\end{aligned}
+$$
+
+## 2
+
+Consider $J$ $2 \times 2$ tables, one for each level $x_j$ of a factor,
+such as age group, with $j=1,\ldots, J$. For the logistic model 
+
+$$
+\pi_{ij} = \frac{e^{\alpha_i + \beta_i x_j}}{1 + e^{\alpha_i + \beta_i x_j}}, \quad i = 1,2, \quad j= 1,\ldots, J.
+$$
+
+
+Show that $\log \phi$ is constant over all tables if
+$\beta_1 = \beta_2$.
+
+### Answer:
+
+$$
+\begin{aligned}
+\because \pi_{ij} &= \frac{e^{\alpha_i + \beta_i x_j}}{1 + e^{\alpha_i + \beta_i x_j}} \\
+\therefore
+\frac{1}{\pi_{ij}} &= \frac{1 + e^{\alpha_i + \beta_i x_j}}{e^{\alpha_i + \beta_i x_j}} \\
+&= \frac{1}{e^{\alpha_i + \beta_i x_j}} + 1 \\
+so, \frac{1}{e^{\alpha_i + \beta_i x_j}} &= \frac{1}{\pi_{ij}} - 1 \\
+e^{\alpha_i + \beta_i x_j} &= \frac{\pi_{ij}}{1 - \pi_{ij}} \\
+\alpha_i + \beta_i x_j &= \log \left( \frac{\pi_{ij}}{1 - \pi_{ij}} \right) \\
+\therefore \alpha_1 - \alpha_2 + \beta_1 x_j - \beta_2 x_j &= \log \left( \frac{\pi_{1j}}{1 - \pi_{1j}} \right) - \log \left( \frac{\pi_{2j}}{1 - \pi_{2j}} \right) \\
+&= \log \left( \frac{\pi_{1j}(1 - \pi_{2j})}{\pi_{2j} (1 - \pi_{1j})} \right) \\
+\because \beta_1 = \beta_2 \\
+\therefore \phi &= \frac{\pi_{1j}(1 - \pi_{2j})}{\pi_{2j} (1 - \pi_{1j})} = e^{\alpha_1 - \alpha_2 + \beta_1 x_j - \beta_2 x_j} = e^{\alpha_1 - \alpha_2} = \text{constant} \\
+\therefore \log \phi &= \log \text{constant} = \text{constant}
+\end{aligned}
+$$
+
+# Concavity of Poisson regression log-likelihood 
+
+Let $Y_1,\ldots,Y_n$ be independent random variables with $Y_i \sim \text{Poisson}(\mu_i)$ and $\log \mu_i = \mathbf{x}_i^T \boldsymbol{\beta}$, $i = 1,\ldots,n$.
+
+
+
+## 1
+
+Write down the log-likelihood function.
+
+### Answer
+
+Since the count response $Y_i$ is Poisson distributed with parameter $\mu_i$, 
+
+$$
+\mathbb{P}(Y_i = y_i) = \frac{\mu_i^{y_i} e^{-\mu_i}}{y_i!}, \quad y_i = 0, 1, 2, \ldots
+$$
+, where $\mu_i = \exp(\mathbf{x}_i^T \boldsymbol{\beta})$ which is the expected value of $Y_i$.
+
+Therefore, the likelihood function is
+
+$$
+\begin{aligned}
+\mathbb{P}(Y_1 = y_1, \ldots, Y_n = y_n; \boldsymbol{\beta}) &= \prod_{i=1}^n \mathbb{P}(Y_i = y_i) \\
+&= \prod_{i=1}^n \frac{\mu_i^{y_i} e^{-\mu_i}}{y_i!} \\
+\end{aligned}
+$$
+
+Therefore, the log-likelihood function is
+
+$$
+\begin{aligned}
+\log\ell(\boldsymbol{\beta}) &= \ln \mathbb{P}(Y_1 = y_1, \ldots, Y_n = y_n; \boldsymbol{\beta}) \\
+&= \ln \prod_{i=1}^n \frac{\mu_i^{y_i} e^{-\mu_i}}{y_i!} \\
+&= \sum_{i=1}^n \ln \frac{\mu_i^{y_i} e^{-\mu_i}}{y_i!} \\
+&= \sum_{i=1}^n \left( y_i \ln \mu_i - \mu_i - \ln y_i! \right) \\
+&= \sum_{i=1}^n \left( y_i \mathbf{x}_i^T \boldsymbol{\beta} - \exp(\mathbf{x}_i^T \boldsymbol{\beta}) - \ln y_i! \right) \\
+&= \sum_{i=1}^n \left( y_i \mathbf{x}_i^T \boldsymbol{\beta} - \exp(\mathbf{x}_i^T \boldsymbol{\beta}) \right) - \sum_{i=1}^n \ln y_i! \\
+&= \sum_{i=1}^n \left( y_i \mathbf{x}_i^T \boldsymbol{\beta} - \exp(\mathbf{x}_i^T \boldsymbol{\beta}) \right) - \text{constant} \\
+\end{aligned}
+$$
+
+## 2
+
+Derive the gradient vector and Hessian matrix of the log-likelhood function with respect to the regression coefficients $\boldsymbol{\beta}$.
+
+### Answer
+
+The gradient vector is
+
+$$
+\begin{aligned}
+\frac{\partial \ell(\boldsymbol{\beta})}{\partial \boldsymbol{\beta}} &= \begin{bmatrix}
+\frac{\partial \ell(\boldsymbol{\beta})}{\partial \beta_1} \\
+\vdots \\
+\frac{\partial \ell(\boldsymbol{\beta})}{\partial \beta_p} \\
+\end{bmatrix} \\
+&= \begin{bmatrix}
+\sum_{i=1}^n \left( y_i x_{i1} - \exp(\mathbf{x}_i^T \boldsymbol{\beta}) x_{i1} \right) \\
+\vdots \\
+\sum_{i=1}^n \left( y_i x_{ip} - \exp(\mathbf{x}_i^T \boldsymbol{\beta}) x_{ip} \right) \\
+\end{bmatrix} \\
+&= \begin{bmatrix}
+\sum_{i=1}^n \left( y_i - \exp(\mathbf{x}_i^T \boldsymbol{\beta}) \right) x_{i1} \\
+\vdots \\
+\sum_{i=1}^n \left( y_i - \exp(\mathbf{x}_i^T \boldsymbol{\beta}) \right) x_{ip} \\
+\end{bmatrix} \\
+&= \sum_{i=1}^n \left( y_i - \exp(\mathbf{x}_i^T \boldsymbol{\beta}) \right) \mathbf{x}_i \\
+\end{aligned}
+$$
+
+
+Or use the way of gradient of a vector function
+
+$$
+\begin{aligned}
+\nabla \ell(\boldsymbol{\beta}) &= \nabla \left( \sum_{i=1}^n \left( y_i \mathbf{x}_i^T \boldsymbol{\beta} - \exp(\mathbf{x}_i^T \boldsymbol{\beta}) \right) \right) \\
+&= \sum_{i=1}^n \nabla \left( y_i \mathbf{x}_i^T \boldsymbol{\beta} - \exp(\mathbf{x}_i^T \boldsymbol{\beta}) \right) \\
+&= \sum_{i=1}^n \left( y_i \mathbf{x}_i - \exp(\mathbf{x}_i^T \boldsymbol{\beta}) \mathbf{x}_i \right) \\
+&= \sum_{i=1}^n \left( y_i - \exp(\mathbf{x}_i^T \boldsymbol{\beta}) \right) \mathbf{x}_i \\
+&= \boldsymbol{X}^T \left( \boldsymbol{y} - \boldsymbol{\mu} \right) \\
+&, where\  \boldsymbol{X} = \begin{bmatrix} \mathbf{x}_1^T \\ \vdots \\ \mathbf{x}_n^T \end{bmatrix}, \boldsymbol{y} = \begin{bmatrix} y_1 \\ \vdots \\ y_n \end{bmatrix}, \boldsymbol{\mu} = \begin{bmatrix} \exp(\mathbf{x}_1^T \boldsymbol{\beta}) \\ \vdots \\ \exp(\mathbf{x}_n^T \boldsymbol{\beta}) \end{bmatrix}
+\end{aligned}
+$$
+
+And the Hessian matrix is
+
+$$
+\begin{aligned}
+\frac{\partial^2 \ell(\boldsymbol{\beta})}{\partial \boldsymbol{\beta} \partial \boldsymbol{\beta}^T} &= \begin{bmatrix}
+\frac{\partial^2 \ell(\boldsymbol{\beta})}{\partial \beta_1 \partial \beta_1} & \cdots & \frac{\partial^2 \ell(\boldsymbol{\beta})}{\partial \beta_1 \partial \beta_p} \\
+\vdots & \ddots & \vdots \\
+\frac{\partial^2 \ell(\boldsymbol{\beta})}{\partial \beta_p \partial \beta_1} & \cdots & \frac{\partial^2 \ell(\boldsymbol{\beta})}{\partial \beta_p \partial \beta_p} \\
+\end{bmatrix} \\
+&= \begin{bmatrix}
+\sum_{i=1}^n \left( - \exp(\mathbf{x}_i^T \boldsymbol{\beta}) x_{i1} x_{i1} \right) & \cdots & \sum_{i=1}^n \left( - \exp(\mathbf{x}_i^T \boldsymbol{\beta}) x_{i1} x_{ip} \right) \\
+\vdots & \ddots & \vdots \\
+\sum_{i=1}^n \left( - \exp(\mathbf{x}_i^T \boldsymbol{\beta}) x_{ip} x_{i1} \right) & \cdots & \sum_{i=1}^n \left( - \exp(\mathbf{x}_i^T \boldsymbol{\beta}) x_{ip} x_{ip} \right) \\
+\end{bmatrix} \\
+&= -\begin{bmatrix}
+\sum_{i=1}^n \exp(\mathbf{x}_i^T \boldsymbol{\beta}) x_{i1} x_{i1} & \cdots & \sum_{i=1}^n \exp(\mathbf{x}_i^T \boldsymbol{\beta}) x_{i1} x_{ip} \\
+\vdots & \ddots & \vdots \\
+\sum_{i=1}^n \exp(\mathbf{x}_i^T \boldsymbol{\beta}) x_{ip} x_{i1} & \cdots & \sum_{i=1}^n \exp(\mathbf{x}_i^T \boldsymbol{\beta}) x_{ip} x_{ip} \\
+\end{bmatrix} \\
+&= -\sum_{i=1}^n \exp(\mathbf{x}_i^T \boldsymbol{\beta}) \mathbf{x}_i \mathbf{x}_i^T \\
+\end{aligned}
+$$
+
+Or use the way of Hessian of a vector function
+
+$$
+\begin{aligned}
+\nabla_{\boldsymbol{\beta}}\nabla_{\boldsymbol{\beta}} \ell(\boldsymbol{\beta}) &= \nabla_{\boldsymbol{\beta}} \sum_{i=1}^n \left( y_i - e^{\mathbf{x}_i^T \boldsymbol{\beta}} \right) \mathbf{x}_i \\
+&= \sum_{i=1}^n \nabla_{\boldsymbol{\beta}} \left( y_i - e^{\mathbf{x}_i^T \boldsymbol{\beta}} \right) \mathbf{x}_i \\
+&= \sum_{i=1}^n \left( -e^{\mathbf{x}_i^T \boldsymbol{\beta}} \mathbf{x}_i \right) \mathbf{x}_i^T \\
+&= \sum_{i=1}^n \left( -e^{\mathbf{x}_i^T \boldsymbol{\beta}} \mathbf{x}_i \mathbf{x}_i^T \right) \\
+&= -\sum_{i=1}^n e^{\mathbf{x}_i^T \boldsymbol{\beta}} \mathbf{x}_i \mathbf{x}_i^T \\
+\end{aligned}
+$$
+
+
+## 3
+
+Show that the log-likelihood function of the log-linear model is a concave function in regression coefficients $\boldsymbol{\beta}$. (Hint: show that the negative Hessian is a positive semidefinite matrix.)
+
+### Answer
+
+Prove that the negative Hessian is a positive semidefinite matrix.
+
+The negative Hessian is $-\nabla_{\boldsymbol{\beta}}\nabla_{\boldsymbol{\beta}} \ell(\boldsymbol{\beta}) = \sum_{i=1}^n e^{\mathbf{x}_i^T \boldsymbol{\beta}} \mathbf{x}_i \mathbf{x}_i^T$. For any vector $\mathbf{v}$, we have 
+
+
+$$
+\begin{aligned}
+\mathbf{v}^T \left( -\nabla_{\boldsymbol{\beta}}\nabla_{\boldsymbol{\beta}} \ell(\boldsymbol{\beta}) \right) \mathbf{v} &= \mathbf{v}^T \left( \sum_{i=1}^n e^{\mathbf{x}_i^T \boldsymbol{\beta}} \mathbf{x}_i \mathbf{x}_i^T \right) \mathbf{v} \\
+&= \sum_{i=1}^n \mathbf{v}^T e^{\mathbf{x}_i^T \boldsymbol{\beta}} \mathbf{x}_i \mathbf{x}_i^T \mathbf{v} \\
+&= \sum_{i=1}^n  e^{\mathbf{x}_i^T \boldsymbol{\beta}} \left(\mathbf{x}_i^T \mathbf{v} \right)^T \left( \mathbf{x}_i^T \mathbf{v} \right) \\
+&= \sum_{i=1}^n  e^{\mathbf{x}_i^T \boldsymbol{\beta}} \left\| \mathbf{x}_i^T \mathbf{v} \right\|^2 \geq 0 \\
+\end{aligned}
+$$
+
+Therefore the negative Hessian is a positive semidefinite matrix, and the log-likelihood function of the log-linear model is a concave function in regression coefficients $\boldsymbol{\beta}$.
+
+## 4
+
+Show that for the fitted values $\widehat{\mu}_i$ from maximum likelihood estimates
+
+$$
+\sum_i \widehat{\mu}_i = \sum_i y_i.
+$$
+
+Therefore the deviance reduces to
+
+$$
+D = 2 \sum_i y_i \log \frac{y_i}{\widehat{\mu}_i}.
+$$
+
+
+### Answer
+First, to calculate the MLE of $\boldsymbol{\mu}$, where $\boldsymbol{\mu} = \begin{bmatrix} \exp(\mathbf{x}_1^T \boldsymbol{\beta}) \\ \vdots \\ \exp(\mathbf{x}_n^T \boldsymbol{\beta}) \end{bmatrix}$, we need to maximize the log-likelihood function; that is, we need to let the gradient of the log-likelihood function equal to zero. And solve the equation $\nabla_{\boldsymbol{\mu}} \ell(\boldsymbol{\mu}) = 0$.
+
+$$
+\begin{aligned}
+\nabla_{\boldsymbol{\mu}} \ell(\boldsymbol{\mu}) &= 0 \\
+\boldsymbol{X}^T \left( \boldsymbol{y} - \boldsymbol{\mu} \right) &= 0 \\
+\boldsymbol{X}^T \boldsymbol{y} &= \boldsymbol{X}^T \boldsymbol{\mu} \\
+\end{aligned}
+$$
+By MLE, we have the estimate for $\boldsymbol{\mu}$ is $\boldsymbol{\widehat{\mu}}$.
+
+Therefore, $\boldsymbol{X}^T \boldsymbol{y} = \boldsymbol{X}^T \boldsymbol{\widehat{\mu}}$.
+
+Since the first row of $\boldsymbol{X}^T$ is a row of $1$, we have$\sum_i \widehat{\mu}_i = \sum_i y_i$.
+
+Then, to calculate the deviance, we need to calculate the log-likelihood function of the log-linear model, and the log-likelihood function is $\log L(y|\widehat{\mu}) = \sum_i \left( y_i \log \widehat{\mu}_i - \widehat{\mu}_i \right)$.
+
+
+According to the definition of deviance, the deviance is
+
+$$
+\begin{aligned}
+D(y, \widehat{\mu}) &= 2 \left[(\log L(y|y) - \log L(y|\widehat{\mu})\right] \\
+\end{aligned}
+$$
+Therefore, the deviance is
+
+$$
+\begin{aligned}
+D &= 2 \sum_i \left( y_i \log y_i - y_i - y_i \log \widehat{\mu}_i + \widehat{\mu}_i \right) \\
+&= 2 \sum_i \left( y_i \log \frac{y_i}{\widehat{\mu}_i} - y_i + \widehat{\mu}_i \right) \\
+&= 2 \sum_i y_i \log \frac{y_i}{\widehat{\mu}_i} - 2 \sum_i y_i + 2 \sum_i \widehat{\mu}_i \\
+\end{aligned}
+$$
+
+Since $\sum_i \widehat{\mu}_i = \sum_i y_i$, the deviance reduces to
+
+$$
+D = 2 \sum_i y_i \log \frac{y_i}{\widehat{\mu}_i}.
+$$
+
+# Negative binomial distribution
+
+Recall the probability mass function of negative binomial distribution is 
+$$
+\mathbb{P}(Y = y) = \binom{y + r - 1}{r - 1} (1 - p)^r p^y, \quad y = 0, 1, \ldots
+$$
+Show $\mathbb{E}Y = \mu = rp / (1 - p)$ and $\operatorname{Var} Y = r p / (1 - p)^2$.
+For Geometric distribution, the mean and variance are $\mu = 1/p$ and $\operatorname{Var} Y = 1/p^2$.
+
+### Answer
+According to the definition of negative binomial distribution which negative binomial distribution is the probability distribution where the trail is repeated until a predefined number of failures have occurred.
+So, the pmf of negative binomial distribution also can be written as
+$$
+\begin{aligned}
+\mathbb{P}(X = n)
+&= \binom{n - 1}{r - 1} p^r (1 - p)^{n - r} \\
+\end{aligned}
+$$
+where $n = y + r - 1$.
+
+Therefore, the kth moment of negative binomial distribution is
+$$
+\begin{aligned}
+\mathbb{E}\left[ X^k \right] 
+&= \sum_{n = r}^{\infty} n^k \binom{n - 1}{r - 1} p^r (1 - p)^{n - r} \\
+\because
+r \binom{n}{r} = n \binom{n - 1}{r - 1} \\
+\mathbb{E}\left[ X^k \right] &= \frac{r}{p} \sum_{n = r}^{\infty} n^{k - 1} \binom{n}{r} p^r (1 - p)^{n - r} \\
+let \quad m = n + 1 \\
+\mathbb{E}\left[ X^k \right] &= \frac{r}{p} \sum_{m = r + 1}^{\infty} (m - 1)^{k - 1} \binom{m - 1}{r} p^r (1 - p)^{m - 1 - r} \\    
+&= \frac{r}{p} \mathbb{E}\left[ (Y - 1)^{k - 1} \right] \\
+\end{aligned}
+$$
+, where $Y$ is a negative binomial distribution with parameters $r + 1$ and $p$.
+By setting $k = 1$, we can get the equation:
+$$
+\begin{aligned}
+\mathbb{E}\left[ X \right]
+&= \frac{r}{p} \mathbb{E}\left[ \left( Y - 1 \right)^0 \right ] \\
+&= \frac{r}{p} \mathbb{E}\left[ 1 \right] \\
+&= \frac{r}{p} \\
+\end{aligned}
+$$
+By setting $k = 2$, we can get the equation:
+$$
+\begin{aligned}
+\mathbb{E}\left[ X^2 \right]
+&= \frac{r}{p} \mathbb{E}\left[ \left( Y - 1 \right)^1 \right ] \\
+&= \frac{r}{p} \mathbb{E}\left[ Y - 1 \right] \\
+&= \frac{r}{p} \left( \frac{r + 1}{p} - 1 \right) \\
+\end{aligned}
+$$
+Therefore, the variance of negative binomial distribution is
+$$
+\begin{aligned}
+\operatorname{Var} \left[ X \right]
+&= \mathbb{E}\left[ X^2 \right] - \mathbb{E}\left[ X \right]^2 \\
+&= \frac{r}{p} \left( \frac{r + 1}{p} - 1 \right) - \left( \frac{r}{p} \right)^2 \\
+&= \frac{r}{p} \left( \frac{r + 1}{p} - 1 - \frac{r}{p} \right) \\
+&= \frac{r}{p} \left( \frac{1 - p}{p} \right) \\
+&= \frac{r\left( 1 - p \right)}{p^2} \\
+\end{aligned}
+$$
+
+# Uniform association 
+
+For the uniform association when all two-way interactions are included, i.e., 
+$$
+\log \mathbb{E}Y_{ijk} = \log p_{ijk} = \log n + \log p_i + \log p_j + \log p_k + \log p_{ij} + \log p_{ik} + \log p_{jk}.
+$$
+
+Proof the odds ratio (or log of odds ratio) across all stratum $k$ 
+$$
+\log \frac{\mathbb{E}Y_{11k}\mathbb{E}Y_{22k}}{\mathbb{E}Y_{12k}\mathbb{E}Y_{21k}}
+$$
+
+is a constant, i.e., the estimated effect of the interaction term "i:j" in the uniform association model 
+
+### Answer
+
+$$
+\log \frac{\mathbb{E}Y_{ijk}\mathbb{E}Y_{i+1j+1k}}{\mathbb{E}Y_{ij+1k}\mathbb{E}Y_{i+1jk}} 
+= \log \frac{nP_{i}P_{j}P_{k}P_{ij}P_{ik}P_{jk}*nP_{i+1}P_{j+1}P_{k}P_{i+1j+1}P_{i+1k}P_{j+1k}}{nP_{i+1}P_{j}P_{k}P_{i+1j}P_{i+1k}P_{jk}*nP_{i}P_{j+1}P_{k}P_{ij+1}P_{ik}P_{j+1k}}
+= \log \frac{P_{ij}P_{i+1j+1}}{P_{i+1j}P_{ij+1}}
+$$
+
+Therefore, the estimated effect of the interaction term $i = 1, j = 1$ in the uniform association model is:
+
+$$
+\log \frac{\mathbb{E}Y_{11k}\mathbb{E}Y_{22k}}{\mathbb{E}Y_{12k}\mathbb{E}Y_{21k}} = \log \frac{P_{11}P_{22}}{P_{12}P_{21}}
+$$
+From the above equation, we can see that the estimated effect of the interaction term $i:j$ in the uniform association model has nothing to do with the stratum $k$. Therefore, the estimated effect of the interaction term $i:j$ in the uniform association model is a constant.
+
+
+## Q2. Moments of exponential family distributions
+
+Show that the exponential family distributions have moments
+\begin{eqnarray*}
+  \mathbb{E}Y &=& \mu = b'(\theta) \\
+  \operatorname{Var}Y &=& \sigma^2 = b''(\theta) a(\phi).
+\end{eqnarray*}
+
+#### Answer
+
+The exponential family distribution has the form
+$$
+\begin{eqnarray*}
+  f(y;\theta,\phi) &=& \exp\left\{\frac{y\theta - b(\theta)}{a(\phi)} + c(y,\phi)\right\}.
+\end{eqnarray*}
+$$
+Since the distribution is in the exponential family, we have
+$$
+\begin{eqnarray*}
+\int f(y;\theta,\phi) dy &=& 1.
+\end{eqnarray*}
+$$
+Differentiating the expression with respect to $\theta$ gives
+$$
+\begin{eqnarray*}
+  \frac{\partial}{\partial \theta} \int f(y;\theta,\phi) dy &=& 0 \\
+  \int \frac{\partial}{\partial \theta} f(y;\theta,\phi) dy &=& 0 \\
+  \int \frac{\partial}{\partial \theta} \exp\left\{\frac{y\theta - b(\theta)}{a(\phi)} + c(y,\phi)\right\} dy &=& 0 \\
+  \int \frac{y - b'(\theta)}{a(\phi)} \exp\left\{\frac{y\theta - b(\theta)}{a(\phi)} + c(y,\phi)\right\} dy &=& 0 \\
+  \int \frac{y - b'(\theta)}{a(\phi)} f(y;\theta,\phi) dy &=& 0 \\
+  \frac{1}{a(\phi)} \int (y - b'(\theta)) f(y;\theta,\phi) dy &=& 0 \\
+  \frac{1}{a(\phi)} \left(\int y f(y;\theta,\phi) dy - b'(\theta) \int f(y;\theta,\phi) dy\right) &=& 0 \\
+  \frac{1}{a(\phi)} \left(\mathbb{E}Y - b'(\theta)\right) &=& 0 \\
+  \therefore \mathbb{E}Y &=& b'(\theta).
+\end{eqnarray*}
+$$
+
+Differentiating the expression with respect to $\theta$ twice gives
+$$
+\begin{eqnarray*}
+  \frac{\partial^2}{\partial \theta^2} \int f(y;\theta,\phi) dy &=& 0 \\
+  \int \frac{\partial^2}{\partial \theta^2} f(y;\theta,\phi) dy &=& 0 \\
+  \int \frac{\partial^2}{\partial \theta^2} \exp\left\{\frac{y\theta - b(\theta)}{a(\phi)} + c(y,\phi)\right\} dy &=& 0 \\
+  \int \frac{\partial}{\partial \theta} \left(\frac{y - b'(\theta)}{a(\phi)}\right) \exp\left\{\frac{y\theta - b(\theta)}{a(\phi)} + c(y,\phi)\right\} dy &=& 0 \\
+  \int \exp\left\{\frac{y\theta - b(\theta)}{a(\phi)} + c(y,\phi)\right\} \left(\frac{y - b'(\theta)}{a(\phi)}\right)^2 + \exp\left\{\frac{y\theta - b(\theta)}{a(\phi)} + c(y,\phi)\right\} \left(-\frac{b''(\theta)}{a(\phi)}\right) dy &=& 0 \\
+  \int \left(\frac{y - b'(\theta)}{a(\phi)}\right)^2 f(y;\theta,\phi) + \left(-\frac{b''(\theta)}{a(\phi)}\right) f(y;\theta,\phi) dy &=& 0 \\
+  \frac{1}{a(\phi)^2} \int (y - b'(\theta))^2 f(y;\theta,\phi) dy - \frac{b''(\theta)}{a(\phi)} \int f(y;\theta,\phi) dy &=& 0 \\
+  \frac{1}{a(\phi)^2} \left(\int y^2 f(y;\theta,\phi) dy - 2b'(\theta) \int y f(y;\theta,\phi) dy + b'(\theta)^2 \int f(y;\theta,\phi) dy\right) - \frac{b''(\theta)}{a(\phi)} &=& 0 \\
+  \frac{1}{a(\phi)^2} \left(\mathbb{E}Y^2 - 2b'(\theta) \mathbb{E}Y + b'(\theta)^2\right) - \frac{b''(\theta)}{a(\phi)} &=& 0 \\
+  \frac{1}{a(\phi)^2} \left(\mathbb{E}Y^2 - 2b'(\theta) \mathbb{E}Y + b'(\theta)^2\right) &=& \frac{b''(\theta)}{a(\phi)} \\
+  \mathbb{E}Y^2 - 2b'(\theta) \mathbb{E}Y + b'(\theta)^2 &=& b''(\theta) a(\phi) \\
+\end{eqnarray*}
+$$
+$$
+\begin{eqnarray*}
+  \therefore \mathbb{E}Y^2 &=& b''(\theta) a(\phi) + 2b'(\theta) \mathbb{E}Y - b'(\theta)^2 \\
+  \therefore \operatorname{Var}Y &=& \mathbb{E}Y^2 - \left[\mathbb{E}Y\right]^2 \\
+  &=& b''(\theta) a(\phi) + 2b'(\theta) \mathbb{E}Y - b'(\theta)^2 - b'(\theta)^2 \\
+  &=& b''(\theta) a(\phi).
+\end{eqnarray*}
+$$
+
+# Score and information matrix of GLM
+
+Derive the gradient (score), negative Hessian, and Fisher information matrix (expected negative Hessian) of GLM.
+
+### Answer
+
+The log-likelihood function of GLM is
+
+$$
+\begin{eqnarray*}
+\ell(\boldsymbol{\beta})
+&=& \ln \prod_{i=1}^n f(y_i;\theta_i,\phi_i) \\
+&=& \sum_{i=1}^n \ln f(y_i;\theta_i,\phi_i) \\
+&=& \sum_{i=1}^n \left\{\frac{y_i\theta_i - b(\theta_i)}{a(\phi_i)} + c(y_i,\phi_i)\right\} \\
+\end{eqnarray*}
+$$
+
+Therefore, the gradient of the log-likelihood function is
+
+$$
+\begin{eqnarray*}
+\frac{\partial}{\partial \beta} \ell(\beta) &=& \frac{\partial \ell(\theta)}{\partial \theta} \frac{\partial \theta}{\partial \mu} \frac{\partial \mu}{\partial \eta} \frac{\partial \eta}{\partial \beta} \\
+&=& \sum_{i=1}^n\frac{\partial}{\partial \theta_i} \left\{\frac{y_i\theta_i - b(\theta_i)}{a(\phi_i)}\right\} \frac{\partial \theta_i}{\partial \mu_i} \frac{\partial \mu_i}{\partial \eta_i} \frac{\partial \eta_i}{\partial \beta} \\
+\end{eqnarray*}
+$$
+Since $\mu_i = b'(\theta_i)$, 
+$$
+\begin{eqnarray*}
+\frac{\partial \mu_i}{\partial \theta_i} &=& b''(\theta_i) \\
+\therefore \frac{\partial \theta_i}{\partial \mu_i} &=& \frac{1}{b''(\theta_i)} \\
+\end{eqnarray*}
+$$
+
+$$
+\begin{eqnarray*}
+\nabla \ell(\boldsymbol{\beta})
+&=& \sum_{i=1}^n\frac{y_i - b'(\theta_i)}{a(\phi_i)} \frac{1}{b''(\theta_i)} \mu'(\eta_i) \mathbf{x}_i \\
+&=& \sum_{i=1}^n\frac{\left(y_i - b'(\theta_i)\right) \mu'(\eta_i) }{a(\phi_i) b''(\theta_i)} \mathbf{x}_i \\
+&=& \sum_{i=1}^n\frac{\left(y_i - b'(\theta_i)\right) \mu'(\eta_i) }{\sigma_i^2} \mathbf{x}_i \\
+\end{eqnarray*}
+$$
+
+And the negative Hessian is
+
+$$
+\begin{eqnarray*}
+-\nabla_{\beta}\nabla_{\beta^\top} \ell(\boldsymbol{\beta}) &=&
+-\nabla_{\beta^\top}\left(\sum_{i=1}^n\frac{\left(y_i - b'(\theta_i)\right) \mu'(\eta_i)}{\sigma_i^2} \mathbf{x}_i\right) \\
+&=& \sum_{i=1}^n \frac{[\mu_i'(\eta_i)]^2}{\sigma_i^2} \mathbf{x}_i \mathbf{x}_i^\top - \sum_{i=1}^n \frac{(y_i - \mu_i) \mu_i''(\eta_i)}{\sigma_i^2} \mathbf{x}_i \mathbf{x}_i^\top & & + \sum_{i=1}^n \frac{(y_i - \mu_i) [\mu_i'(\eta_i)]^2 (d \sigma_i^{2} / d\mu_i)}{\sigma_i^4} \mathbf{x}_i \mathbf{x}_i^\top \\\
+\end{eqnarray*}
+$$
+Since the Fisher information matrix is the expected negative Hessian, the Fisher information matrix is
+
+$$
+\begin{eqnarray*}
+\mathcal{I}(\beta) &=& \mathbb{E}\left[-H_l(\beta)\right] \\
+&=& \mathbb{E}\left[-\nabla_{\beta}\nabla_{\beta^\top} \ell(\boldsymbol{\beta})\right] \\
+&=& \mathbb{E}\left[\sum_{i=1}^n \frac{[\mu_i'(\eta_i)]^2}{\sigma_i^2} \mathbf{x}_i \mathbf{x}_i^\top - \sum_{i=1}^n \frac{(y_i - \mu_i) \mu_i''(\eta_i)}{\sigma_i^2} \mathbf{x}_i \mathbf{x}_i^\top + \sum_{i=1}^n \frac{(y_i - \mu_i) [\mu_i'(\eta_i)]^2 (d \sigma_i^{2} / d\mu_i)}{\sigma_i^4} \mathbf{x}_i \mathbf{x}_i^\top\right] \\
+&=& \sum_{i=1}^n \frac{[\mu_i'(\eta_i)]^2}{\sigma_i^2} \mathbf{x}_i \mathbf{x}_i^\top\ since\ \mathbb{E}\left[y_i - \mu_i\right] = 0 \\
+\end{eqnarray*}
+$$
+
+# Exponential Family
+
+Data is generated from the exponential distribution with density $f(y) = \lambda \exp(-\lambda y)$ where $\lambda, y > 0$.
+
+## 1
+
+Identify the specific form of $\theta,\phi,a(),b()$ and $c()$ for the exponential distribution.
+
+### Answer
+
+Since the exponential distribution is given by 
+$$
+f(y) = \lambda e^{-\lambda y}
+$$
+Making it into the exponential family form, we have
+$$
+\begin{eqnarray*}
+f(y) &=& \lambda e^{-\lambda y} \\
+&=& \exp\left\{-\lambda y + \ln \lambda\right\} \\
+\end{eqnarray*}
+$$
+Therefore, we have
+
+$$
+\begin{eqnarray*}
+\theta &=& -\lambda \\
+\phi &=& 1 \\
+a(\phi) &=& \phi = 1 \\
+b(\theta) &=& -\ln \lambda = -\ln(-\theta) \\
+c(y,\phi) &=& 0.
+\end{eqnarray*}
+$$
+
+## (b)
+
+What is the canonical link and variance function for a GLM with a response following the exponential distribution?
+
+### Answer
+
+The canonical link function for the exponential distribution is shown by the following equation:
+
+$$
+\begin{eqnarray*}
+\mathbb{E}(Y) &=& \mu = b'(\theta) = \frac{d}{d\theta} b(\theta) \\
+\because \theta &=& -\lambda \\
+\therefore b(\theta) &=& -\ln \lambda = -\ln(-\theta) \\
+\therefore \mu &=& \frac{d}{d\theta} b(\theta) = \frac{d}{d\theta} -\ln(-\theta) = -\frac{1}{\theta} \\
+Therefore,\ \theta &=& g(\mu) = -\frac{1}{\mu}\\
+\because \eta &=& \theta \\
+\therefore \eta &=&  g(\mu) = -\frac{1}{\mu}.
+\end{eqnarray*}
+$$
+The canonical link function is $\eta = -\frac{1}{\mu}$.
+
+And the variance function is given by
+
+$$
+\begin{eqnarray*}
+\text{Var}(Y) &=& b''(\theta) a(\phi) \\
+&=& \frac{1}{\theta^2} \times 1 \\
+&=& \frac{1}{\lambda^2}.
+\end{eqnarray*}
+$$
+
+## (c)
+
+Identify a practical difficulty that may arise when using the canonical link in this instance.
+
+### Answer
+
+The canonical link function is $\eta = -\frac{1}{\mu}$. However, the canonical link function is not defined for $\mu = 0$. Therefore, the canonical link function is not defined for $\mu = 0$. This is a practical difficulty that may arise when using the canonical link in this instance.
+
+## (d)
+
+When comparing nested models in this case, should an F or $\chi^2$ test be used? Explain.
+
+### Answer
+
+Since the exponential distribution is a member of the exponential family, the likelihood ratio test should be used. Therefore, the $\chi^2$ test should be used when comparing nested models in this case. The reason is that, in GLM, the distribution of the test statistic under the null hypothesis is asymptotically chi-square, which is a result derived from the properties of maximum likelihood estimation. And the F test is used when comparing non-nested models or comparing linear regression models. 
+
+## (e)
+
+Express the deviance in this case in terms of the responses $y_i$ and the fitted values $\hat{μ}_i$.
+
+### Answer
+
+Since the log-likelihood function of exponential distribution is given by
+
+$$
+\begin{eqnarray*}
+\ell(\beta) &=& \ln \prod_{i=1}^n \lambda e^{-\lambda y_i} \\
+&=& \sum_{i=1}^n \ln \lambda e^{-\lambda y_i} \\
+&=& \sum_{i=1}^n \ln \lambda - \lambda y_i \\
+\because \theta &=& -\lambda, and\ \mu = -\frac{1}{\theta} \\
+\therefore \lambda &=& \frac{1}{\mu} \\
+\therefore \ell(\beta) &=& \sum_{i=1}^n \ln \frac{1}{\mu} - \frac{1}{\mu} y_i \\
+\end{eqnarray*}
+$$
+Therefore, the deviance is given by
+
+$$
+\begin{eqnarray*}
+D(\beta) &=& 2\left(\ell(y_i) - \ell(\hat{\mu})\right) \\
+&=& 2\left(\sum_{i=1}^n \ln \frac{1}{y_i} - \frac{1}{y_i} y_i - \sum_{i=1}^n \ln \frac{1}{\hat{\mu}} - \frac{1}{\hat{\mu}} y_i\right) \\ 
+&=& 2\sum_{i=1}^n \left(\ln \frac{1}{y_i} - \frac{1}{y_i} y_i - \ln \frac{1}{\hat{\mu}} + \frac{1}{\hat{\mu}} y_i\right) \\
+&=& 2\sum_{i=1}^n \left(\ln \frac{\hat{\mu}}{y_i} +\frac{y_i}{\hat{\mu}} - 1\right) \\
+&=& 2\sum_{i=1}^n \left(\ln \frac{\hat{\mu}}{y_i} +\frac{y_i-\hat{\mu}}{\hat{\mu}}\right) \\
+\end{eqnarray*}
+$$
+
+# Poisson GLM
+
+Consider the Galápagos data and model analyzed in this chapter. The purpose of this question is to reproduce the details of the GLM fitting of this data.
+
+## (a)
+
+Fit a Poisson model to the species response with the five geographic variables as predictors. Do not use the endemics variable. Report the values of the coefficients and the deviance.
+
+### Answer
+
+```{r}
+#| eval: TRUE
+# fit the Poisson model
+library(tidyverse)
+library(gtsummary)
+library(MASS)
+library(faraway)
+data(gala)
+poisson_model <- 
+  glm(Species ~ Area + Elevation + Nearest + Scruz + Adjacent, 
+      data = gala, 
+      family = poisson)
+
+summary(poisson_model)
+
+poisson_model |>
+  tbl_regression() |>
+  bold_p(t = 0.05) |>
+  bold_labels() 
+```
+The coefficients of the Poisson model are listed in the table above. The deviance of the Poisson model is 716.85.
+
+## (b)
+
+For a Poisson GLM, derive $\eta_i, d\eta/d\mu, V(\mu)$ and the weights to be used in an iteratively fit GLM. What is the form of the adjusted dependent variable here?
+
+### Answer
+
+Based on the Poisson model, the link function is given by
+
+$$
+\begin{eqnarray*}
+\eta_i &=& \log(\mu_i) \\
+\end{eqnarray*}
+$$
+
+The derivative of $\eta$ with respect to $\mu$ is given by
+
+$$
+\begin{eqnarray*}
+\frac{d\eta_i}{d\mu_i} &=& \frac{1}{\mu_i} \\
+\end{eqnarray*}
+$$
+
+The $V(\mu_i)$ is given by
+
+$$
+\begin{eqnarray*}
+V(\mu_i) &=& \text{Var}(Y_i) &=& \mu_i \\
+\end{eqnarray*}
+$$
+
+Since the log-likehood function of the Poisson distribution is given by
+
+$$
+\begin{eqnarray*}
+\ell(\beta) &=& \ln \prod_{i=1}^n \frac{e^{-\mu_i} \mu_i^{y_i}}{y_i!} \\
+&=& \sum_{i=1}^n \ln \frac{e^{-\mu_i} \mu_i^{y_i}}{y_i!} \\
+&=& \sum_{i=1}^n -\mu_i + y_i \ln \mu_i - \ln y_i! \\
+&=& \sum_{i=1}^n y_i x_i^\top \beta - \exp(x_i^\top \beta) - \ln y_i! \\
+\end{eqnarray*}
+$$
+Therefore, the negative Hessians of the log-likelihood function of poisson distribution is given by
+
+$$
+\begin{eqnarray*}
+-H_l(\beta) &=& -\nabla_{\beta} \nabla_{\beta} \ell(\beta) \\
+&=& -\nabla_{\beta} \nabla_{\beta} \sum_{i=1}^n y_i x_i^\top \beta - \exp(x_i^\top \beta) - \ln y_i! \\
+&=& -\nabla_{\beta} \sum_{i=1}^n y_i x_i - \exp(x_i^\top \beta) x_i \\
+&=& -\sum_{i=1}^n -\exp(x_i^\top \beta) x_i x_i^\top \\
+&=& \sum_{i=1}^n e^{x_i^\top \beta} x_i x_i^\top \\
+&=& \sum_{i=1}^n \mu_i x_i x_i^\top \\
+&=& X^\top W X \\
+\end{eqnarray*}
+$$
+Therefore, the weights to be used in an iteratively fit GLM is $W = \text{diag}(w_1, w_2, \ldots, w_n), w_i = \mu_i$.
+
+The form of the adjusted dependent variable is given by
+
+$$
+\begin{eqnarray*}
+z_i &=& \eta_i + s\left(y_i - \hat{\mu_i}\right) \frac{d\eta_i}{d\hat{\mu_i}} \\
+&=& \log(\hat{\mu_i}) + s\left(y_i - \hat{\mu_i}\right) \frac{1}{\hat{\mu_i}} \\
+&=& \log(\hat{\mu_i}) + s\frac{y_i - \hat{\mu_i}}{\hat{\mu_i}} \\
+\end{eqnarray*}
+$$
+
+# Balanced one-way ANOVA random effects model
+
+Consider the balanced one-way ANOVA random effects model with $a$ levels and $n$ observations in each level
+
+$$
+y_{ij} = \mu + \alpha_i + \epsilon_{ij}, \quad i=1,\ldots,a, \quad j=1,\ldots,n.
+$$
+
+where $\alpha_i$ are iid from $N(0,\sigma_\alpha^2)$, $\epsilon_{ij}$ are iid from $N(0, \sigma_\epsilon^2)$. 
+
+## 1
+Derive the ANOVA estimate for $\mu$, $\sigma_\alpha^2$, and $\sigma_{\epsilon}^2$. Specifically show that
+
+$$
+\begin{eqnarray*}
+  \mathbb{E}(\bar y_{\cdot \cdot}) &=& \mathbb{E} \left( \frac{\sum_{ij} y_{ij}}{na} \right) = \mu \\
+  \mathbb{E} (\text{SSE}) &=& \mathbb{E} \left[ \sum_{i=1}^a \sum_{j=1}^n (y_{ij} - \bar{y}_{i \cdot})^2 \right] = a(n-1) \sigma_{\epsilon}^2 \\
+  \mathbb{E} (\text{SSA}) &=& \mathbb{E} \left[ \sum_{i=1}^a \sum_{j=1}^n (\bar{y}_{i \cdot} - \bar{y}_{\cdot \cdot})^2 \right] = (a-1)(n \sigma_{\alpha}^2 + \sigma_{\epsilon}^2),
+\end{eqnarray*}
+$$
+which can be solved to obtain ANOVA estimate
+
+$$
+\begin{eqnarray*}
+\widehat{\mu} &=& \frac{\sum_{ij} y_{ij}}{na}, \\
+\widehat{\sigma}_{\epsilon}^2 &=& \frac{\text{SSE}}{a(n-1)}, \\
+\widehat{\sigma}_{\alpha}^2 &=& \frac{\text{SSA}/(a-1) - \widehat{\sigma}_{\epsilon}^2}{n}.
+\end{eqnarray*}
+$$
+
+### Answer
+
+Since, for the mixed effects model, we have
+
+$$
+\begin{eqnarray*}
+\mathbf{y} = \mathbf{1}_{na} \mu + \begin{pmatrix}
+\mathbf{1}_{n} & & \\
+& \vdots & \\
+& & \mathbf{1}_{n}
+\end{pmatrix} \boldsymbol{\gamma} + \boldsymbol{\epsilon}.
+\end{eqnarray*}
+$$
+1. ANOVA estimator. 
+
+First
+
+$$
+\text{SSE} = \sum_i \sum_j (y_{ij} - \bar y_{i\cdot})^2 = \mathbf{y}^T \mathbf{A}_1 \mathbf{y}
+$$
+, where 
+$$
+\mathbf{A}_1 = \begin{pmatrix}
+\mathbf{I}_n - n^{-1} \mathbf{1}_n \mathbf{1}_n^T & & \\
+& \ddots & \\
+& & \mathbf{I}_n - n^{-1} \mathbf{1}_n \mathbf{1}_n^T
+\end{pmatrix}.
+$$
+So
+$$
+\begin{eqnarray*}
+\mathbb{E} (\text{SSE}) &=& \mathbb{E} \mathbf{y}^T \mathbf{A}_1 \mathbf{y} \\
+&=& \mathbb{E} \operatorname{tr} \mathbf{A}_1 \mathbf{y} \mathbf{y}^T \\
+&=& \operatorname{tr} \mathbf{A}_1 (\sigma_\alpha^2 \mathbf{Z} \mathbf{Z}^T + \sigma_\epsilon^2 \mathbf{I}_{na}) +  \mu^2 \operatorname{tr} \mathbf{A}_1 \mathbf{1}_{na} \mathbf{1}_{na}^T \\
+&=& 0 + a (n - 1) \sigma_{\epsilon}^2 + 0 \\
+&=& a (n - 1) \sigma_{\epsilon}^2.
+\end{eqnarray*}
+$$
+Now 
+
+$$
+\text{SST} = \mathbf{y}^T \mathbf{A}_0 \mathbf{y},
+$$
+, where $\mathbf{A}_0 = \mathbf{I}_{na} - (na)^{-1} \mathbf{1}_{na} \mathbf{1}_{na}^T$. 
+
+So
+
+$$
+\begin{eqnarray*}
+\mathbb{E}(\text{SST}) &=& \operatorname{tr} \mathbf{A}_0 (\sigma_\alpha^2 \mathbf{Z} \mathbf{Z}^T + \sigma_\epsilon^2 \mathbf{I}_{na}) + \mu^2 \operatorname{tr} \mathbf{A}_0 \mathbf{1}_{na} \mathbf{1}_{na}^T \\
+&=& n (a - 1) \sigma_\alpha^2 + (na - 1) \sigma_{\epsilon}^2 + 0 \\
+&=& n (a - 1) \sigma_\alpha^2 + (na - 1) \sigma_{\epsilon}^2.
+\end{eqnarray*}
+$$
+
+Therefore
+$$
+\mathbb{E}(\text{SSA}) = \mathbb{E}(\text{SST}) - \mathbb{E}(\text{SSE}) = (a - 1)(n \sigma_{\alpha}^2 + \sigma_{\epsilon}^2).
+$$
+
+
+## 2
+
+Derive the MLE estimate for $\mu$, $\sigma_\alpha^2$, and $\sigma_{\epsilon}^2$. Hint: write down the log-likelihood and find the maximizer.
+
+### Answer
+
+The log-likelihodd is
+$$
+\begin{eqnarray*}
+\ell(\mu, \sigma_{\alpha}^2, \sigma_{\epsilon}^2) &=& - \frac n2 \log(2\pi) - \frac 12 \log \det (\sigma_{\alpha}^2 \mathbf{Z} \mathbf{Z}^T + \sigma_{\epsilon}^2 \mathbf{I}) - \frac 12 (\mathbf{y} - \mathbf{1}_{na} \mu)^T (\sigma_{\alpha}^2 \mathbf{Z} \mathbf{Z}^T + \sigma_{\epsilon}^2 \mathbf{I})^{-1} (\mathbf{y} - \mathbf{1}_{na} \mu) \\
+&=& \sum_i - \frac 12 \log \det (\sigma_{\alpha}^2 \mathbf{1}_n \mathbf{1}_n^T + \sigma_{\epsilon}^2 \mathbf{I}_n) - \frac 12 (\mathbf{y}_i - \mathbf{1}_{n} \mu)^T (\sigma_{\alpha}^2 \mathbf{1}_n \mathbf{1}_n^T + \sigma_{\epsilon}^2 \mathbf{I}_n)^{-1} (\mathbf{y}_i - \mathbf{1}_{n} \mu).
+\end{eqnarray*}
+$$
+By Woodbury formula
+$$
+\begin{eqnarray*}
+(\sigma_{\alpha}^2 \mathbf{1}_n \mathbf{1}_n^T + \sigma_{\epsilon}^2 \mathbf{I}_n)^{-1} &=& \sigma_{\epsilon}^{-2} \mathbf{I}_{n} - \frac{\sigma_{\epsilon}^{-2} \sigma_{\alpha}^2}{\sigma_{\epsilon}^2 + n\sigma_{\alpha}^2} \mathbf{1}_n \mathbf{1}_n^T \\
+\det (\sigma_{\alpha}^2 \mathbf{1}_n \mathbf{1}_n^T + \sigma_{\epsilon}^2 \mathbf{I}_n) &=& \sigma_{\epsilon}^{2n} (1 + n \sigma_{\alpha}^2 / \sigma_{\epsilon}^2).
+\end{eqnarray*}
+$$
+Let $\lambda = \sigma_\alpha^2 / \sigma_\epsilon^2$, then the log-likelihood is
+$$
+\begin{eqnarray*}
+\ell(\mu, \sigma_{\alpha}^2, \sigma_{\epsilon}^2) &=& - \frac{na}{2} \log \sigma_{\epsilon}^2 - \frac{a}{2} \log (1 + n\lambda) - \frac{\sigma_{\epsilon}^{-2}}{2} \text{SST}(\mu) + \frac{\sigma_{\epsilon}^{-2}}{2} \frac{n\lambda}{1 + n \lambda} \text{SSA}(\mu) \\
+&=& - \frac{na}{2} \log \sigma_{\epsilon}^2 - \frac{a}{2} \log (1 + n\lambda) - \frac{\sigma_{\epsilon}^{-2}}{2} \frac{\text{SST}(\mu) + n\lambda \text{SSA}}{1 + n \lambda}.
+\end{eqnarray*}
+$$
+Setting derivative with respect to $\mu$ to 0 yields
+$$
+\hat \mu = \bar y_{\cdot \cdot}.
+$$
+Setting derivative with respect to $\sigma_{\epsilon}^2$ to 0 yields equation
+$$
+\sigma_{\epsilon}^2 = \frac{\text{SST} - \frac{n\lambda}{1 + n\lambda} \text{SSA}}{na} = \frac{\text{SST} + n \lambda \text{SSE}}{na(1 + n\lambda)}.
+$$
+Substitution of the above expression into the log-likelihood shows we need to maximize
+$$
+\begin{eqnarray*}
+& & - \frac{na}{2} \log \left( \text{SST} - \frac{n\lambda}{1 + n\lambda} \text{SSA} \right) - \frac{a}{2} \log (1 + n\lambda) \\
+&=& - \frac{na}{2} \log \left( \text{SST} + n \lambda \text{SSE} \right) + \frac{(n-1)a}{2} \log (1 + n \lambda).
+\end{eqnarray*}
+$$
+Setting derivative to 0 gives the maximizer
+$$
+\hat \lambda = \frac{n-1}{n} \frac{\text{SST}}{\text{SSE}} - 1.
+$$
+Thus
+$$
+\hat \sigma_{\epsilon}^2 = \frac{\text{SST} - \frac{n \hat \lambda}{1 + n \hat \lambda} \text{SSA}}{na} = \frac{\text{SSE}}{(n-1)a}
+$$
+(same as ANOVA estimate) 
+
+and
+$$
+\hat \sigma_{\alpha}^2 = \frac{\text{SSA}}{an} - \frac{\text{SSE}}{an(n-1)} 
+$$
+
+## 3
+
+Derive the REML estimate for $\mu$, $\sigma_\alpha^2$, and $\sigma_{\epsilon}^2$. 
+
+### Answer
+
+Let $K \in \mathbb{R}^{n \times (n-1)}$ (as fixed effects only contain intercept) be a basis of ${\cal N}(X^T)$. Then 
+$$
+K^T Y \sim N(0, K^T \Omega K).
+$$
+and the log-likelihood is
+$$
+\, - \frac 12 \log \det K^T \Omega K - \frac 12 y^T K(K^T \Omega K)^{-1} K^T y.
+$$
+Setting the derivative with respect to $\sigma_\alpha^2$ and $\sigma_\epsilon^2$ to 0 yields the estimation equations
+$$
+\begin{eqnarray*}
+  \frac{\partial}{\partial \sigma_{\epsilon}^2} \ell &=& - \frac 12 \operatorname{tr} [K(K^T \Omega K)^{-1} K^T] - \frac 12 y^t K(K^T \Omega K)^{-1} K^T K(K^T \Omega K)^{-1} K^T y = 0, \\
+  \frac{\partial}{\partial \sigma_{\alpha}^2} \ell &=& - \frac 12 \operatorname{tr} [K(K^T \Omega K)^{-1} K^T Z Z^T] - \frac 12 y^t K(K^T \Omega K)^{-1} K^T Z Z^T K(K^T \Omega K)^{-1} K^T y = 0.
+\end{eqnarray*}
+$$
+We need to show:
+$$
+K(K^T \Omega K)^{-1} K^T = \Omega^{-1} - \Omega^{-1} X (X^T \Omega^{-1} X)^{-1} X^T \Omega^{-1}.
+$$
+This is because (1) the two sides
+$$
+\Omega^{1/2} K(K^T \Omega K)^{-1} K^T \Omega^{1/2} = I - \Omega^{-1/2} X (X^T \Omega^{-1} X)^{-1} X^T \Omega^{-1/2}
+$$
+are the (unique) orthogonal projection to the space ${\cal C}(X)^\perp = {\cal N}(X^T)$. Or we can prove the relationship as the follows:
+
+Both $KK^{+} := K(K^T K)^{-1}K^T$ and $XX^{+}:=X(X^TX)^{-1}X^T$ are symmetric and idempotent, and $K^TX=0$. Therefore $KK^{+} X = 0$ and $XX^{+} K = 0$. Hence $T = I-KK^{+}-XX^{+}$ is symmetric and idempotent. We have
+$$
+\begin{eqnarray*}
+&\mbox{tr}(TT^T) &= \mbox{tr}(T^2) = \mbox{tr}(T)  \\
+& &=N-r_x-r_k = N-r_x-(N-r_x)=0.
+\end{eqnarray*}
+$$
+But $T$ is real, so that $\mbox{tr}(TT^T)=0$ implies that $T=0$. Therefore $KK^{+}=I-XX^{+}$. Because $\Omega=(\Omega^{1/2})^2$. Then, since $(\Omega^{1/2}K)^T\Omega^{-1/2}X=0$, because $K^TX=0$, we can replace $K$ and $X$ by $\Omega^{1/2}K$ and $\Omega^{-1/2}X$ respectively. 
+
+Rewrite $KK^{+}=I-XX^{+}$ as
+$$
+I-X(X^TX)^{-1}X^T = K(K^TK)^{-1}K^T.
+$$
+and replace relevant terms by $\Omega^{1/2}K$ and $\Omega^{-1/2}X$, we get
+$$
+ I-\Omega^{-1/2}X(X^T\Omega^{-1}X)^{-1}X^T\Omega^{-1/2} = \Omega^{1/2}K(K^T\Omega K)^{-1}K^T\Omega^{1/2}.
+$$
+i.e.,
+$$
+\Omega^{-1} - \Omega^{-1} X (X^T \Omega^{-1} X)^{-1} X^T \Omega^{-1} = K(K^T \Omega K)^{-1} K^T.
+$$
+
+Let's simplify
+
+$$
+\begin{eqnarray*}
+\mathbf{A} &:=& \Omega^{-1} - \Omega^{-1} X (X^T \Omega^{-1} X)^{-1} X^T \Omega^{-1} \\
+&=& \Omega^{-1} - \frac{(1 + n \lambda) \sigma_{\epsilon}^2}{na} \Omega^{-1} X X^T \Omega^{-1} \\
+&=& \Omega^{-1} - \frac{(1 + n \lambda) \sigma_{\epsilon}^2}{na} \left( \frac{\sigma_{\epsilon}^{-2}}{1 + n \lambda} \right)^2 \mathbf{1}_{na} \mathbf{1}_{na}^T \\
+&=& \Omega^{-1} - \frac{\sigma_{\epsilon}^{-2}}{na(1 + n \lambda)} \mathbf{1}_{na} \mathbf{1}_{na}^T \\
+&=& \sigma_\epsilon^{-2} \mathbf{I}_{na} - \frac{\sigma_\epsilon^{-2} \lambda}{1 + n\lambda} \mathbf{Z} \mathbf{Z}^T - \frac{\sigma_{\epsilon}^{-2}}{na(1 + n \lambda)} \mathbf{1}_{na} \mathbf{1}_{na}^T, \\
+\mathbf{A}^2 &=& \sigma_{\epsilon}^{-4} \left( \mathbf{I}_{na} - \frac{\lambda}{1 + n\lambda} \mathbf{Z} \mathbf{Z}^T - \frac{1}{na(1 + n \lambda)} \mathbf{1}_{na} \mathbf{1}_{na}^T \right) \left( \mathbf{I}_{na} - \frac{\lambda}{1 + n\lambda} \mathbf{Z} \mathbf{Z}^T - \frac{1}{na(1 + n \lambda)} \mathbf{1}_{na} \mathbf{1}_{na}^T \right) \\
+&=& \sigma_{\epsilon}^{-4} \left( \mathbf{I}_{na} + \frac{n\lambda^2}{(1 + n \lambda)^2} \mathbf{Z} \mathbf{Z}^T + \frac{1}{na(1 + n\lambda)^2} \mathbf{1}_{na} \mathbf{1}_{na}^T - \frac{2\lambda}{1 + n\lambda} \mathbf{Z} \mathbf{Z}^T - \frac{2}{na(1+n\lambda)} \mathbf{1}_{na} \mathbf{1}_{na}^T + \frac{2\lambda}{a(1+n\lambda)^2} \mathbf{1}_{na} \mathbf{1}_{na}^T \right) \\
+&=& \sigma_{\epsilon}^{-4} \left( \mathbf{I}_{na} - \frac{2\lambda + n\lambda^2}{(1 + n\lambda)^2} \mathbf{Z} \mathbf{Z}^T - \frac{1}{na(1 + n\lambda)^2} \mathbf{1}_{na} \mathbf{1}_{na}^T \right), \\
+\mathbf{A} \mathbf{Z} \mathbf{Z}^T \mathbf{A} &=& ( \sigma_\epsilon^{-2} \mathbf{I}_{na} - \frac{\sigma_\epsilon^{-2} \lambda}{1 + n\lambda} \mathbf{Z} \mathbf{Z}^T - \frac{\sigma_{\epsilon}^{-2}}{na(1 + n \lambda)} \mathbf{1}_{na} \mathbf{1}_{na}^T) \mathbf{Z} \mathbf{Z}^T (\sigma_\epsilon^{-2} \mathbf{I}_{na} - \frac{\sigma_\epsilon^{-2} \lambda}{1 + n\lambda} \mathbf{Z} \mathbf{Z}^T - \frac{\sigma_{\epsilon}^{-2}}{na(1 + n \lambda)} \mathbf{1}_{na} \mathbf{1}_{na}^T) \\
+\end{eqnarray*}
+$$
+
+The first estimation equations becomes
+
+$$
+\begin{eqnarray*}
+  \frac{\partial}{\partial \sigma_{\epsilon}^2} \ell &=& - \frac 12 \operatorname{tr} \mathbf{A} - \frac 12 \mathbf{y}^T \mathbf{A} \mathbf{A} \mathbf{y} \\
+  &=& - \frac{na}{2} \sigma_{\epsilon}^{-2} + \frac{na\lambda}{2(1 + n \lambda)} \sigma_{\epsilon}^{-2} + \frac{1}{2(1 + n\lambda)} \sigma_{\epsilon}^{-2} \\
+  &=& 0.
+\end{eqnarray*}
+$$
+Thus, the REML estimator of $\mu$ is the same as the MLE estimator of $\mu$.
+
+The REML estimator of $\sigma_{\epsilon}^2$ is
+
+$$
+\begin{eqnarray*}
+  \hat{\sigma}_{\epsilon}^2 &=& \frac{\text{SSE}}{a(n-1)} \\
+\end{eqnarray*}
+$$
+
+The REML estimator of $\sigma_{\alpha}^2$ is
+
+$$
+\begin{eqnarray*}
+  \hat{\sigma}_{\alpha}^2 &=& \frac{\frac{SSA}{a-1} - \hat{\sigma}_{\epsilon}^2}{n} \\
+\end{eqnarray*}
+$$
+
+
+## 4
+
+For all three estimates, check that your results match those we obtained using R for the `pulp` example in class.
+
+### Answer
+
+Here, I will check the results for the MLE estimates of $\mu$, $\sigma_{\alpha}^2$, and $\sigma_{\epsilon}^2$ for the `pulp` example in class.
+
+```{r}
+#| eval: TRUE
+# check the results for MLE
+
+# MLE for mu
+mu_hat <- mean(pulp$bright)
+
+aovmod <- aov(bright ~ operator, data = pulp) %>%
+  summary()
+
+# MLE for sigma^2_alpha
+sigma2_alpha_hat <- (aovmod[[1]][[2]][[1]])/(4*4) - 
+  (aovmod[[1]][[2]][[2]][1])/(4*5*4)
+
+# MLE for sigma^2_epsilon
+sigma2_epsilon_hat <- aovmod[[1]][[2]][[2]]/(4*4)
+
+# ANOVA
+mu_hat_anova <- mean(pulp$bright)
+sigma2_epsilon_hat_anova <- 1.7 / (4*4)
+sigma2_alpha_hat_anova <- 1.34 / (4*5) - 1.7 / (4*5*4)
+
+# compare the results
+cbind(c(mu_hat, sigma2_alpha_hat, sigma2_epsilon_hat),
+      c(mu_hat_anova, sigma2_alpha_hat_anova, 
+        sigma2_epsilon_hat_anova)) %>%
+  `rownames<-`(c("mu", "sigma^2_alpha", "sigma^2_epsilon")) %>%
+  `colnames<-`(c("MLE", "ANOVA")) %>%
+  knitr::kable()
+```
+
+From the table, we can see that the MLE estimates of $\mu$ and $\sigma_{\epsilon}^2$ are the same as the ANOVA estimates. However, the MLE estimate of $\sigma_{\alpha}^2$ is different from the ANOVA estimate. This is because the ANOVA estimate is biased.
+
+# Estimation of random effects
+
+## 1
+Assume the conditional distribution
+$$
+\mathbf{y} \mid \boldsymbol{\gamma} \sim N(\mathbf{X} \boldsymbol{\beta} + \mathbf{Z} \boldsymbol{\gamma}, \sigma^2 \mathbf{I}_n)
+$$
+and the prior distribution
+$$
+\boldsymbol{\gamma} \sim N(\mathbf{0}_q, \boldsymbol{\Sigma}).
+$$
+Then by the Bayes theorem, the posterior distribution is
+$$
+\begin{eqnarray*}
+f(\boldsymbol{\gamma} \mid \mathbf{y}) &=& \frac{f(\mathbf{y} \mid \boldsymbol{\gamma}) \times f(\boldsymbol{\gamma})}{f(\mathbf{y})}, \end{eqnarray*}
+$$
+where $f$ denotes corresponding density. Show that the posterior distribution is a multivariate normal with mean
+$$
+\mathbb{E} (\boldsymbol{\gamma} \mid \mathbf{y}) = \boldsymbol{\Sigma} \mathbf{Z}^T (\mathbf{Z} \boldsymbol{\Sigma} \mathbf{Z}^T + \sigma^2 \mathbf{I})^{-1} (\mathbf{y} - \mathbf{X} \boldsymbol{\beta}).
+$$
+
+### Answer
+
+$$
+f(y \mid \gamma) = \frac{1}{(2\pi \sigma^2)^{n/2}} e^{-\frac{\|y - X \beta - Z \gamma\|^2}{2\sigma^2}}
+$$
+
+$$
+f(\gamma) = \frac{1}{(2 \pi)^{q/2} (\det \Sigma)^{1/2}} e^{- \frac{\gamma^T \Sigma \gamma}{2}}.
+$$
+So 
+$$
+\begin{eqnarray*}
+f(\gamma \mid y) &\propto& f(y \mid \gamma) f(\gamma) \\
+&\propto& e^{- \frac{\|y - X \beta - Z \gamma\|^2}{2\sigma^2} - \frac{\gamma^T \Sigma \gamma}{2}}
+\end{eqnarray*}
+$$
+Focusing on the exponent,
+$$
+\begin{eqnarray*}
+  & & \sigma^{-2} \gamma^T Z^T Z \gamma - 2 \sigma^{-2} \gamma^T Z^T (y - X \beta) + \gamma^T \Sigma \gamma \\
+  &=& \gamma^T (\sigma^{-2} Z^T Z + \Sigma^{-1}) \gamma - 2 \sigma^{-2} \gamma^T Z^T (y - X \beta) \\
+  &=& \gamma^T (\sigma^{-2} Z^T Z + \Sigma^{-1}) \gamma - 2 \sigma^{-2} \gamma^T (\sigma^{-2} Z^T Z + \Sigma^{-1}) (\sigma^{-2} Z^T Z + \Sigma^{-1})^{-1 } Z^T (y - X \beta).
+\end{eqnarray*}
+$$
+It's clear the covariance of posterior normal distribution is 
+$$
+(\sigma^{-2} Z^T Z + \Sigma^{-1})^{-1} = \Sigma - \Sigma Z^T (\sigma^2 I_n + Z_i Z_i^T)^{-1} Z_i \Sigma.
+$$
+Now by binomial inversion formula
+$$
+\begin{eqnarray*}
+  & & \sigma^{-2} (\sigma^{-2} Z^T Z + \Sigma^{-1})^{-1 } Z^T (y - X \beta) \\
+  &=& \sigma^{-2} [\Sigma Z^T - \Sigma Z^T (Z \Sigma Z^T + \sigma^2 I)^{-1} Z \Sigma Z^T] (y - X \beta) \\
+  &=& \sigma^{-2} \Sigma Z^T [I - (Z \Sigma Z^T + \sigma^2 I)^{-1} Z \Sigma Z^T] (y - X \beta) \\
+  &=& \sigma^{-2} \Sigma Z^T [(Z \Sigma Z^T + \sigma^2 I)^{-1} (Z \Sigma Z^T + \sigma^2 I) - (Z \Sigma Z^T + \sigma^2 I)^{-1} Z \Sigma Z^T] (y - X \beta) \\
+  &=& \Sigma Z^T (Z \Sigma Z^T + \sigma^2 I)^{-1} (y - X \beta).
+\end{eqnarray*}
+$$
+Specializing to the balanced one-way ANOVA case, the conditional mean is
+$$
+\begin{eqnarray*}
+& & \sigma_{\epsilon}^{-2} (\sigma_{\epsilon}^{-2} Z^T Z + \Sigma_{\epsilon}^{-1})^{-1 } Z^T (y - X \beta) \\
+&=& \sigma_{\epsilon}^{-2} (n \sigma_{\epsilon}^{-2} + \sigma_{\alpha}^{-2})^{-1} Z^T (y - \hat \mu 1) \\
+&=& \frac{n}{n + (\sigma_{\epsilon}/\sigma_{\alpha})^2} \begin{pmatrix}
+ y_{1\cdot} - \hat \mu \\
+\vdots \\
+y_{a\cdot} - \hat \mu
+\end{pmatrix} \\
+&=& \frac{1}{1 + n^{-1}(\sigma_{\epsilon}/\sigma_{\alpha})^2} \begin{pmatrix}
+\hat \alpha_1 \\
+\vdots \\
+\hat \alpha_a
+\end{pmatrix}.
+\end{eqnarray*}
+$$
+
+For fixed effects with sum-to-zero coding,
+
+$$
+X = \begin{pmatrix}
+\mathbf{1}_{n} & \mathbf{1}_{n} & & & \\
+\mathbf{1}_{n} & & & & \\
+\vdots & & \ddots &  \\
+\mathbf{1}_{n} & & & \mathbf{1}_{n} \\
+\mathbf{1}_{n} & -\mathbf{1}_{n} & \cdots & -\mathbf{1}_{n}
+\end{pmatrix}.
+$$
+The fixed effect estimate is
+$$
+\hat \beta = (X^T X)^{-1} X^T y = \begin{pmatrix}
+\bar y_{\cdot \cdot} \\
+\bar y_{1 \cdot} - \bar y_{\cdot \cdot} \\
+\vdots \\
+\bar y_{a-1,\cdot} - \bar y_{\cdot \cdot}
+\end{pmatrix}.
+$$
+
+## 2
+
+For the balanced one-way ANOVA random effects model, show that the posterior mean of random effects is always a constant (less than 1) multiplying the corresponding fixed effects estimate.
+
+### Answer
+
+The posterior mean of random effects is
+$$
+\begin{eqnarray*}
+& & \Sigma Z^T (Z \Sigma Z^T + \sigma^2 I)^{-1} (y - X \beta) \\
+&=& \Sigma Z^T (Z \Sigma Z^T + \sigma^2 I)^{-1} (y - \hat \mu \mathbf{1}) \\
+&=& \Sigma Z^T (Z \Sigma Z^T + \sigma^2 I)^{-1} (Z \Sigma Z^T + \sigma^2 I) \begin{pmatrix}
+\hat \alpha_1 \\
+\vdots \\
+\hat \alpha_a
+\end{pmatrix} \\
+&=& \Sigma Z^T \begin{pmatrix}
+\hat \alpha_1 \\
+\vdots \\
+\hat \alpha_a
+\end{pmatrix} \\
+&=& \frac{1}{1 + n^{-1}(\sigma_{\epsilon}/\sigma_{\alpha})^2} \begin{pmatrix}
+\hat \alpha_1 \\
+\vdots \\
+\hat \alpha_a
+\end{pmatrix}.
+\end{eqnarray*}
+$$
+, where $\alpha_i$ is the random effect for the $i$-th level.
+
+Since $\frac{1}{1 + n^{-1}(\sigma_{\epsilon}/\sigma_{\alpha})^2} < 1$, the posterior mean of random effects is always a constant (less than 1) multiplying the corresponding fixed effects estimate.
+
+
+
+The posterior mean is always a constant (less than 1) multiplying the corresponding fixed effects estimate.
+
+# GEE
+
+Provide an algebraic definition for a generalized linear marginal model (GEE) in which the only effects are for the intercept and Year (as a continuous variable). Fit this model and provide a table which includes the estimates of the parameters in your model.
+
+## Answer
+
+Algebraic Definition of GEE:
+
+For a Generalized Linear Marginal Model (GEE) with only the intercept and Year as predictors, the model can be defined as follows:
+
+Let $\mathbf{Y}_i$ be the response vector of $i$-th individual.
+
+Expected response vector: $\mathbb{E} [\mathbf{Y}_i] = \boldsymbol{\mu}_i$
+
+The link function: $g(\boldsymbol{\mu}_i) = \log \left[\mathbb{E} [\mathbf{Y}_{ij}| \mathbf{Y}_{j}] \right] = \beta_0 + \beta_1 \times \text{Year}_i$, where $\beta_0$ is the intercept and $\beta_1$ is the coefficient for the Year.
+
+Therefore, the model can be written as: $\log \left[\mathbb{E} [\mathbf{Y}_{ij}| \mathbf{Y}_{j}] \right] = \beta_0 + \beta_1 \times \text{Year}_i$
+
+Variance-covariance Structure is: $\mathbf{V}_i = \text{Var}(\mathbf{Y}_i) = \phi \mathbf{A}_i^{1/2} \mathbf{R}_i(\boldsymbol{\alpha}) \mathbf{A}_i^{1/2}$, where $\mathbf{A}_i = \text{diag}(a(\boldsymbol{\mu}))$ captures the individual variances and $\mathbf{R}_i(\boldsymbol{\alpha})$ is a working correlation matrix. $\phi$ is the dispersion parameter.
+
+
+# GLMM
+
+Provide an algebraic definition for a generalized linear mixed model (GLMM) in which the only fixed effects are for the intercept and Year (as a continuous variable), and the only random effect is the intercept. What is being assumed about how the distribution of risk among subjects changes with time?
+     
+## Answer
+
+To define a Generalized Linear Mixed Model (GLMM) where the only fixed effects are for the intercept and Year (as a continuous variable), and the only random effect is the intercept, we can define the model as follows:
+
+Model Components:
+
+1. Fixed Effects:
+   - Intercept: $\beta_0$
+   - Year: $\beta_1 \times \text{Year}_i$
+   
+2. Random Effects:
+   - Intercept: $b_{i} \sim N(0, \sigma^2)$
+
+Let $\mathbf{Y}_i$ be the response vector of $i$-th individual.
+
+Expected response vector: $\mathbb{E} [\mathbf{Y}_i|b_i] = \boldsymbol{\mu}_i$
+   
+Therefore, the linear predictor for the GLMM is: $\eta_i = \beta_0 + \beta_1 \times \text{Year}_i + b_{i}$
+
+And the link function is: $g(\boldsymbol{\mu}_i) = \beta_0 + \beta_1 \times \text{Year}_i + b_{i}$, where $b_{i}$ is the random effect which are assumed to be normally distributed with mean 0 and variance $\sigma^2$.
+
+So, the full model of the GLMM is: $g(\boldsymbol{\mu}_i) = g(\mathbb{E}[\mathbf{Y}_i|b_i]) = log(\mathbb{E}[\mathbf{Y}_i|b_i]) = \beta_0 + \beta_1 \times \text{Year}_i + b_{i}$, where $\mathbf{Y}_{ij}$ is the response of the $j$-th observation in the $i$-th individual, and $b_{i}\sim N(0, \sigma_0^2)$.
+
+Assumption about the distribution of risk among subjects with time:
+
+- At the initial time point (Year = 0), the log-risk (or log-expected count) of new skin cancers for the $i$-th individual is $\beta_0 + b_{i}$. This means each individual has a unique baseline risk that deviates from the population average by $b_{i}$.
+
+- The random intercepts $b_{i}$ are assumed to be normally distributed with mean 0 and variance $\sigma_0^2$. This implies that the individual-specific baseline risks are symmetrically distributed around the population average $\beta_0$.
+
+- The fixed effect for the Year variable $\beta_1$ captures the linear change in risk over time. The assumption is that the risk changes at a constant rate over time for all individuals.
