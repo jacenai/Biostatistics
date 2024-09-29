@@ -3172,7 +3172,7 @@ loaded via a namespace (and not attached):
 -rw-rw-r--@  1 jacenai  staff  13332 Jan  5  2023 CHANGELOG.txt
 -rw-rw-r--@  1 jacenai  staff   2518 Jan  5  2023 LICENSE.txt
 -rw-rw-r--@  1 jacenai  staff   2884 Jan  6  2023 SHA256SUMS.txt
-drwxr-xr-x@ 27 jacenai  staff    864 Sep 20 12:18 hosp
+drwxr-xr-x@ 27 jacenai  staff    864 Sep 29 00:27 hosp
 drwxr-xr-x@ 13 jacenai  staff    416 Mar  9  2024 icu
 lrwxr-xr-x@  1 jacenai  staff     49 Jan 24  2024 mimic-iv-2.2 -&gt; /Users/jacenai/Desktop/BIOSTAT_203B/mimic-iv-2.2/</code></pre>
 </div>
@@ -3416,7 +3416,7 @@ Number of lines in /Users/jacenai/mimic/hosp/patients.csv.gz:   299713</code></p
 <span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-lh</span> ~/mimic/hosp/labevents.csv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>-rw-rw-r--@ 1 jacenai  staff   1.8G Jan  5  2023 /Users/jacenai/mimic/hosp/labevents.csv.gz
--rw-r--r--@ 1 jacenai  staff    13G Sep 20 12:22 /Users/jacenai/mimic/hosp/labevents.csv</code></pre>
+-rw-r--r--@ 1 jacenai  staff    13G Sep 29 00:30 /Users/jacenai/mimic/hosp/labevents.csv</code></pre>
 </div>
 </div>
 <p>Then, <strong>comparing the run times:</strong> From the output below, in general, the run time of <code>zcat</code> on the compressed file is more than the run time of <code>wc</code> on the uncompressed file.</p>
@@ -3429,14 +3429,14 @@ Number of lines in /Users/jacenai/mimic/hosp/patients.csv.gz:   299713</code></p
 <div class="cell-output cell-output-stdout">
 <pre><code> 118171368
 
-real    0m14.327s
-user    0m22.215s
-sys 0m1.588s
+real    0m14.214s
+user    0m22.070s
+sys 0m1.578s
  118171368 /Users/jacenai/mimic/hosp/labevents.csv
 
-real    0m14.315s
-user    0m12.505s
-sys 0m1.447s</code></pre>
+real    0m14.313s
+user    0m12.436s
+sys 0m1.442s</code></pre>
 </div>
 </div>
 <p><strong>Trade-off between storage and speed:</strong> compressed files save storage space but may require additional time for decompression during access. Uncompressed files provide faster access but consume more storage space. If storage space is a critical concern and access speed can be tolerated, compression is beneficial. However, if rapid access is crucial and storage space is not a limiting factor, using uncompressed files might be preferred.</p>
@@ -3629,14 +3629,14 @@ Su Mo Tu We Th Fr Sa
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">date</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Fri Sep 20 12:22:58 PDT 2024</code></pre>
+<pre><code>Sun Sep 29 00:30:38 PDT 2024</code></pre>
 </div>
 </div>
 <p><code>date</code>: Prints the current date and time.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb58"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hostname</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>wifi-169-232-80-90.host.ucla.edu</code></pre>
+<pre><code>jacens-air.lan</code></pre>
 </div>
 </div>
 <p><code>hostname</code>: prints the hostname of the server that I’m currently logged into.</p>
@@ -3650,37 +3650,41 @@ Su Mo Tu We Th Fr Sa
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb62"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">uname</span> <span class="at">-a</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Darwin wifi-169-232-80-90.host.ucla.edu 23.6.0 Darwin Kernel Version 23.6.0: Mon Jul 29 21:16:46 PDT 2024; root:xnu-10063.141.2~1/RELEASE_ARM64_T8112 arm64</code></pre>
+<pre><code>Darwin jacens-air.lan 23.6.0 Darwin Kernel Version 23.6.0: Mon Jul 29 21:16:46 PDT 2024; root:xnu-10063.141.2~1/RELEASE_ARM64_T8112 arm64</code></pre>
 </div>
 </div>
 <p><code>uname -a</code> command in Linux is used to display detailed information about the system’s kernel and hardware. It provides a comprehensive set of details about the system, including the kernel name, network node hostname, kernel release, kernel version, machine hardware name, processor type, hardware platform, and the operating system. In my case, the kernel name is “Darwin,” and the network node hostname is “s-169-232-81-195.resnet.ucla.edu.” The kernel release, version 22.4.0, indicates the specific version of the Darwin kernel. The timestamp “Mon Mar 6 21:01:02 PST 2023” denotes when the kernel was built.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb64"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">uptime</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>12:22  up 22 days, 16:32, 1 user, load averages: 2.74 2.59 2.73</code></pre>
+<pre><code> 0:30  up 4 days,  5:46, 3 users, load averages: 3.23 2.81 2.57</code></pre>
 </div>
 </div>
 <p><code>uptime</code> command in Linux is used to display the current time, how long the system has been running, and information about the system’s load averages. It provides a quick overview of the system’s status and activity.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb66"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">who</span> am i</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>jacenai                       Sep 20 12:22 </code></pre>
+<pre><code>jacenai                       Sep 29 00:30 </code></pre>
 </div>
 </div>
 <p><code>who am i</code> command in Linux is used to display information about the current user who is logged into the system. It provides details such as the username and the time the user logged in. In my case, the username is “jacenai,” and the time the user logged in is “Jan 24 10:11”</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb68"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">who</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>jacenai          console      Aug 28 20:21 </code></pre>
+<pre><code>jacenai          console      Sep 24 18:44 
+jacenai          ttys005      Sep 28 23:12 
+jacenai          ttys006      Sep 28 23:35 </code></pre>
 </div>
 </div>
 <p><code>who</code> command displays information about currently logged-in users. It provides details such as the username, terminal, login time</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb70"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">w</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>12:22  up 22 days, 16:32, 1 user, load averages: 2.74 2.59 2.73
+<pre><code> 0:30  up 4 days,  5:46, 3 users, load averages: 3.23 2.81 2.57
 USER       TTY      FROM    LOGIN@  IDLE WHAT
-jacenai    console  -      28Aug24 22days -</code></pre>
+jacenai    console  -      Tue18   4days -
+jacenai    s005     -      Sat23       - ssh jia@hoffman2.idre.ucla.edu
+jacenai    s006     -      Sat23      26 -zsh</code></pre>
 </div>
 </div>
 <p><code>w</code> command displays information about the currently logged-in users and their activities. It provides a summary of user-related information, including details about each user’s login session, the time they’ve been idle, and the commands they are currently running.</p>
@@ -3694,16 +3698,16 @@ jacenai    console  -      28Aug24 22days -</code></pre>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb74"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">last</span> <span class="kw">|</span> <span class="fu">head</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>jacenai    ttys000                         Wed Sep 18 17:39 - 17:39  (00:00)
-jacenai    ttys000                         Mon Sep 16 09:57 - 09:57  (00:00)
-jacenai    ttys000                         Sun Sep 15 21:09 - 21:09  (00:00)
-jacenai    ttys000                         Wed Sep 11 19:50 - 19:50  (00:00)
-jacenai    ttys000                         Wed Sep 11 19:38 - 19:38  (00:00)
-jacenai    ttys001                         Wed Sep 11 08:28 - 08:28  (00:00)
-jacenai    ttys000                         Wed Sep 11 08:26 - 08:26  (00:00)
-jacenai    ttys001                         Tue Sep 10 23:21 - 23:21  (00:00)
-jacenai    ttys000                         Tue Sep 10 23:16 - 23:16  (00:00)
-jacenai    ttys000                         Tue Sep 10 18:16 - 18:16  (00:00)</code></pre>
+<pre><code>jacenai    ttys006                         Sat Sep 28 23:35   still logged in
+jacenai    ttys005                         Sat Sep 28 23:12   still logged in
+jacenai    ttys006                         Sat Sep 28 19:08 - 19:08  (00:00)
+jacenai    ttys006                         Sat Sep 28 19:04 - 19:04  (00:00)
+jacenai    ttys006                         Sat Sep 28 18:48 - 18:48  (00:00)
+jacenai    ttys005                         Sat Sep 28 18:21 - 18:21  (00:00)
+jacenai    ttys000                         Wed Sep 25 12:41 - 12:41  (00:00)
+jacenai    console                         Tue Sep 24 18:44   still logged in
+reboot time                                Tue Sep 24 18:44
+shutdown time                              Tue Sep 24 18:44</code></pre>
 </div>
 </div>
 <p><code>last</code> command in Linux is used to display information about previously logged-in users, including their login and logout times. When combined with the <code>head</code> command, it limits the output to the specified 10 newest lines.</p>
@@ -3718,7 +3722,7 @@ jacenai    ttys000                         Tue Sep 10 18:16 - 18:16  (00:00)</co
 <div class="sourceCode cell-code" id="cb78"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="bu">time</span> sleep 5</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-real    0m5.008s
+real    0m5.007s
 user    0m0.000s
 sys 0m0.001s</code></pre>
 </div>
@@ -3869,6 +3873,188 @@ sys 0m0.001s</code></pre>
 <span id="cb85-23"><a href="#cb85-23" aria-hidden="true" tabindex="-1"></a>        </span>
 <span id="cb85-24"><a href="#cb85-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">done</span></span>
 <span id="cb85-25"><a href="#cb85-25" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Run a python file on the cluster</p>
+<p>First, prepare all the necessary files and data on the cluster. For example, I have a python file named <code>hoffman2_indiv_network.py</code>.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> networkx <span class="im">as</span> nx</span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> community.community_louvain <span class="im">as</span> community_louvain  <span class="co"># Correct import for modularity calculation</span></span>
+<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> glob  <span class="co"># For file handling</span></span>
+<span id="cb86-6"><a href="#cb86-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-7"><a href="#cb86-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to process each file</span></span>
+<span id="cb86-8"><a href="#cb86-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_file(file_path):</span>
+<span id="cb86-9"><a href="#cb86-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb86-10"><a href="#cb86-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Load the adjacency matrix</span></span>
+<span id="cb86-11"><a href="#cb86-11" aria-hidden="true" tabindex="-1"></a>    adjacency_matrix <span class="op">=</span> pd.read_csv(file_path, index_col<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb86-12"><a href="#cb86-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb86-13"><a href="#cb86-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create a graph from the adjacency matrix</span></span>
+<span id="cb86-14"><a href="#cb86-14" aria-hidden="true" tabindex="-1"></a>    G <span class="op">=</span> nx.from_pandas_adjacency(adjacency_matrix)</span>
+<span id="cb86-15"><a href="#cb86-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-16"><a href="#cb86-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1. Calculate Number of Edges</span></span>
+<span id="cb86-17"><a href="#cb86-17" aria-hidden="true" tabindex="-1"></a>    num_edges <span class="op">=</span> G.number_of_edges()</span>
+<span id="cb86-18"><a href="#cb86-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-19"><a href="#cb86-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2. Centrality (Degree Centrality)</span></span>
+<span id="cb86-20"><a href="#cb86-20" aria-hidden="true" tabindex="-1"></a>    degree_centrality <span class="op">=</span> nx.degree_centrality(G)</span>
+<span id="cb86-21"><a href="#cb86-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-22"><a href="#cb86-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate Average Degree Centrality</span></span>
+<span id="cb86-23"><a href="#cb86-23" aria-hidden="true" tabindex="-1"></a>    average_degree_centrality <span class="op">=</span> <span class="bu">sum</span>(degree_centrality.values()) <span class="op">/</span> <span class="bu">len</span>(degree_centrality)</span>
+<span id="cb86-24"><a href="#cb86-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-25"><a href="#cb86-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 3. Modularity</span></span>
+<span id="cb86-26"><a href="#cb86-26" aria-hidden="true" tabindex="-1"></a>    partition <span class="op">=</span> community_louvain.best_partition(G)</span>
+<span id="cb86-27"><a href="#cb86-27" aria-hidden="true" tabindex="-1"></a>    modularity <span class="op">=</span> community_louvain.modularity(partition, G)</span>
+<span id="cb86-28"><a href="#cb86-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-29"><a href="#cb86-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 4. Clustering Coefficient</span></span>
+<span id="cb86-30"><a href="#cb86-30" aria-hidden="true" tabindex="-1"></a>    average_clustering_coefficient <span class="op">=</span> nx.average_clustering(G)</span>
+<span id="cb86-31"><a href="#cb86-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-32"><a href="#cb86-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Collect results in a dictionary</span></span>
+<span id="cb86-33"><a href="#cb86-33" aria-hidden="true" tabindex="-1"></a>    results <span class="op">=</span> {</span>
+<span id="cb86-34"><a href="#cb86-34" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Extract just the file name and also keep the part before _adjacency_matrix.csv</span></span>
+<span id="cb86-35"><a href="#cb86-35" aria-hidden="true" tabindex="-1"></a>        <span class="st">&#39;Individual&#39;</span>: file_path.split(<span class="st">&#39;/&#39;</span>)[<span class="op">-</span><span class="dv">1</span>].split(<span class="st">&#39;_adjacency_matrix.csv&#39;</span>)[<span class="dv">0</span>],</span>
+<span id="cb86-36"><a href="#cb86-36" aria-hidden="true" tabindex="-1"></a>        <span class="st">&#39;Number of Edges&#39;</span>: num_edges,</span>
+<span id="cb86-37"><a href="#cb86-37" aria-hidden="true" tabindex="-1"></a>        <span class="st">&#39;Average Degree Centrality&#39;</span>: average_degree_centrality,</span>
+<span id="cb86-38"><a href="#cb86-38" aria-hidden="true" tabindex="-1"></a>        <span class="st">&#39;Modularity&#39;</span>: modularity,</span>
+<span id="cb86-39"><a href="#cb86-39" aria-hidden="true" tabindex="-1"></a>        <span class="st">&#39;Average Clustering Coefficient&#39;</span>: average_clustering_coefficient</span>
+<span id="cb86-40"><a href="#cb86-40" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb86-41"><a href="#cb86-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-42"><a href="#cb86-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> results</span>
+<span id="cb86-43"><a href="#cb86-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-44"><a href="#cb86-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-45"><a href="#cb86-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an empty DataFrame to store results</span></span>
+<span id="cb86-46"><a href="#cb86-46" aria-hidden="true" tabindex="-1"></a>results_df <span class="op">=</span> pd.DataFrame(columns<span class="op">=</span>[<span class="st">&#39;Individual&#39;</span>, </span>
+<span id="cb86-47"><a href="#cb86-47" aria-hidden="true" tabindex="-1"></a>                                   <span class="st">&#39;Number of Edges&#39;</span>, </span>
+<span id="cb86-48"><a href="#cb86-48" aria-hidden="true" tabindex="-1"></a>                                   <span class="st">&#39;Average Degree Centrality&#39;</span>, </span>
+<span id="cb86-49"><a href="#cb86-49" aria-hidden="true" tabindex="-1"></a>                                   <span class="st">&#39;Modularity&#39;</span>, </span>
+<span id="cb86-50"><a href="#cb86-50" aria-hidden="true" tabindex="-1"></a>                                   <span class="st">&#39;Average Clustering Coefficient&#39;</span>])</span>
+<span id="cb86-51"><a href="#cb86-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-52"><a href="#cb86-52" aria-hidden="true" tabindex="-1"></a><span class="co"># Update the path to where your input files are located on Hoffman2</span></span>
+<span id="cb86-53"><a href="#cb86-53" aria-hidden="true" tabindex="-1"></a>input_path <span class="op">=</span> <span class="st">&#39;/u/home/j/jia/mice_colon/indiv_network/individual_network_stat_1_12/&#39;</span> </span>
+<span id="cb86-54"><a href="#cb86-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-55"><a href="#cb86-55" aria-hidden="true" tabindex="-1"></a><span class="co"># Collect all CSV files in the input directory</span></span>
+<span id="cb86-56"><a href="#cb86-56" aria-hidden="true" tabindex="-1"></a>file_paths <span class="op">=</span> glob.glob(input_path <span class="op">+</span> <span class="st">&#39;*.csv&#39;</span>)</span>
+<span id="cb86-57"><a href="#cb86-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-58"><a href="#cb86-58" aria-hidden="true" tabindex="-1"></a><span class="co"># Process each file and append results to the DataFrame</span></span>
+<span id="cb86-59"><a href="#cb86-59" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> file_path <span class="kw">in</span> file_paths:</span>
+<span id="cb86-60"><a href="#cb86-60" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> process_file(file_path)</span>
+<span id="cb86-61"><a href="#cb86-61" aria-hidden="true" tabindex="-1"></a>    results_df <span class="op">=</span> pd.concat([results_df, pd.DataFrame([result])], ignore_index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb86-62"><a href="#cb86-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-63"><a href="#cb86-63" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the results to a CSV file instead of displaying them</span></span>
+<span id="cb86-64"><a href="#cb86-64" aria-hidden="true" tabindex="-1"></a>output_path <span class="op">=</span> <span class="st">&#39;/u/home/j/jia/mice_colon/indiv_network/output/&#39;</span></span>
+<span id="cb86-65"><a href="#cb86-65" aria-hidden="true" tabindex="-1"></a>results_df.to_csv(output_path <span class="op">+</span> <span class="st">&#39;individual_network_results_1_12.csv&#39;</span>,</span>
+<span id="cb86-66"><a href="#cb86-66" aria-hidden="true" tabindex="-1"></a>                  index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb86-67"><a href="#cb86-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb86-68"><a href="#cb86-68" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Results saved to </span><span class="sc">{</span>output_path<span class="sc">}</span><span class="ss">&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Make sure that I have all packages installed on the cluster. If not, install them using the following commands in the terminal (on the cluster not in the python)</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="co"># first check all the modules available</span></span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> av</span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a><span class="co"># check all the python modules available</span></span>
+<span id="cb87-5"><a href="#cb87-5" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> av python</span>
+<span id="cb87-6"><a href="#cb87-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-7"><a href="#cb87-7" aria-hidden="true" tabindex="-1"></a><span class="co"># here&#39;s the example output:</span></span>
+<span id="cb87-8"><a href="#cb87-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------- /u/local/Modules/modulefiles -------------------------</span></span>
+<span id="cb87-9"><a href="#cb87-9" aria-hidden="true" tabindex="-1"></a><span class="co"># python/2.7.15  python/3.6.8  python/3.9.6(default)  </span></span>
+<span id="cb87-10"><a href="#cb87-10" aria-hidden="true" tabindex="-1"></a><span class="co"># python/2.7.18  python/3.7.3 </span></span>
+<span id="cb87-11"><a href="#cb87-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-12"><a href="#cb87-12" aria-hidden="true" tabindex="-1"></a><span class="co"># load the python module</span></span>
+<span id="cb87-13"><a href="#cb87-13" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load python/3.9.6</span>
+<span id="cb87-14"><a href="#cb87-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-15"><a href="#cb87-15" aria-hidden="true" tabindex="-1"></a><span class="ex">pip3</span> install python-louvain<span class="er">(</span><span class="ex">package</span> name<span class="kw">)</span> <span class="ex">--user</span></span>
+<span id="cb87-16"><a href="#cb87-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-17"><a href="#cb87-17" aria-hidden="true" tabindex="-1"></a><span class="co"># upload the script/code to the cluster</span></span>
+<span id="cb87-18"><a href="#cb87-18" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> <span class="at">-r</span> /Users/jacenai/Desktop/GSR_Project/Colon_Methylation/indiv_network_submit.sh jia@dtn2.hoffman2.idre.ucla.edu:/u/home/j/jia/mice_colon/indiv_network</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Then, create a .sh file (submission script) to run the python file. The .sh file is as follows:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a><span class="co">#$ -cwd                        # Run the job in the current directory</span></span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a><span class="co">#$ -o joblog.$JOB_ID           # Save the job output in a file named &quot;joblog.&lt;job_id&gt;&quot;</span></span>
+<span id="cb88-4"><a href="#cb88-4" aria-hidden="true" tabindex="-1"></a><span class="co">#$ -j y                        # Combine output and error logs</span></span>
+<span id="cb88-5"><a href="#cb88-5" aria-hidden="true" tabindex="-1"></a><span class="co">#$ -l h_rt=13:00:00,h_data=8G  # Set the runtime to 13 hours and the memory limit to 8 GB</span></span>
+<span id="cb88-6"><a href="#cb88-6" aria-hidden="true" tabindex="-1"></a><span class="co">#$ -pe shared 1                # Request 1 CPU core</span></span>
+<span id="cb88-7"><a href="#cb88-7" aria-hidden="true" tabindex="-1"></a><span class="co">#$ -M jiachenai@g.ucla.edu     # Email notifications to your UCLA email</span></span>
+<span id="cb88-8"><a href="#cb88-8" aria-hidden="true" tabindex="-1"></a><span class="co">#$ -m bea                      # Send an email at the start, end, and if the job aborts</span></span>
+<span id="cb88-9"><a href="#cb88-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-10"><a href="#cb88-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Print some job info:</span></span>
+<span id="cb88-11"><a href="#cb88-11" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Job </span><span class="va">$JOB_ID</span><span class="st"> started on:   &quot;</span> <span class="kw">`</span><span class="fu">hostname</span> <span class="at">-s</span><span class="kw">`</span></span>
+<span id="cb88-12"><a href="#cb88-12" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Job </span><span class="va">$JOB_ID</span><span class="st"> started on:   &quot;</span> <span class="kw">`</span><span class="fu">date</span> <span class="kw">`</span></span>
+<span id="cb88-13"><a href="#cb88-13" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot; &quot;</span></span>
+<span id="cb88-14"><a href="#cb88-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-15"><a href="#cb88-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the module environment:</span></span>
+<span id="cb88-16"><a href="#cb88-16" aria-hidden="true" tabindex="-1"></a><span class="bu">.</span> /u/local/Modules/default/init/modules.sh</span>
+<span id="cb88-17"><a href="#cb88-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-18"><a href="#cb88-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the necessary module for Python:</span></span>
+<span id="cb88-19"><a href="#cb88-19" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load python/3.9.6   <span class="co"># Load Python 3.9.6</span></span>
+<span id="cb88-20"><a href="#cb88-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-21"><a href="#cb88-21" aria-hidden="true" tabindex="-1"></a><span class="co"># (Optional) Activate a virtual environment if needed:</span></span>
+<span id="cb88-22"><a href="#cb88-22" aria-hidden="true" tabindex="-1"></a><span class="co"># source $HOME/virtualenvs/&lt;YOUR_VIRTUAL_ENVIRONMENT_NAME&gt;/bin/activate</span></span>
+<span id="cb88-23"><a href="#cb88-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-24"><a href="#cb88-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Run your Python script:</span></span>
+<span id="cb88-25"><a href="#cb88-25" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> /u/home/j/jia/mice_colon/indiv_network/hoffman2_indiv_network_13_24.py</span>
+<span id="cb88-26"><a href="#cb88-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-27"><a href="#cb88-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Check for errors and log if any:</span></span>
+<span id="cb88-28"><a href="#cb88-28" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="va">$?</span> <span class="ot">-ne</span> 0 <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb88-29"><a href="#cb88-29" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;Job </span><span class="va">$JOB_ID</span><span class="st"> failed on:   &quot;</span> <span class="kw">`</span><span class="fu">hostname</span> <span class="at">-s</span><span class="kw">`</span></span>
+<span id="cb88-30"><a href="#cb88-30" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;Job </span><span class="va">$JOB_ID</span><span class="st"> failed on:   &quot;</span> <span class="kw">`</span><span class="fu">date</span> <span class="kw">`</span></span>
+<span id="cb88-31"><a href="#cb88-31" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb88-32"><a href="#cb88-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-33"><a href="#cb88-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Print job end info:</span></span>
+<span id="cb88-34"><a href="#cb88-34" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Job </span><span class="va">$JOB_ID</span><span class="st"> ended on:   &quot;</span> <span class="kw">`</span><span class="fu">hostname</span> <span class="at">-s</span><span class="kw">`</span></span>
+<span id="cb88-35"><a href="#cb88-35" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Job </span><span class="va">$JOB_ID</span><span class="st"> ended on:   &quot;</span> <span class="kw">`</span><span class="fu">date</span> <span class="kw">`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Then, submit the job to the cluster using the following command:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="co"># make the .sh file executable</span></span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x hoffman2_indiv_network.sh</span>
+<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-4"><a href="#cb89-4" aria-hidden="true" tabindex="-1"></a><span class="co"># before submitting the job, make sure the .sh file is executable and </span></span>
+<span id="cb89-5"><a href="#cb89-5" aria-hidden="true" tabindex="-1"></a><span class="co"># request enough resources the resources requested not necessarily </span></span>
+<span id="cb89-6"><a href="#cb89-6" aria-hidden="true" tabindex="-1"></a><span class="co"># the same as the ones in the .sh file if you&#39;re going to </span></span>
+<span id="cb89-7"><a href="#cb89-7" aria-hidden="true" tabindex="-1"></a><span class="co"># use `qsub` submission script, but if you&#39;re going to use `qrsh` </span></span>
+<span id="cb89-8"><a href="#cb89-8" aria-hidden="true" tabindex="-1"></a><span class="co"># then you need to request the resources in the .sh file</span></span>
+<span id="cb89-9"><a href="#cb89-9" aria-hidden="true" tabindex="-1"></a><span class="ex">qrsh</span> <span class="at">-l</span> h_rt=4:00:00,h_data=4G</span>
+<span id="cb89-10"><a href="#cb89-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-11"><a href="#cb89-11" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load python/3.9.6</span>
+<span id="cb89-12"><a href="#cb89-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-13"><a href="#cb89-13" aria-hidden="true" tabindex="-1"></a><span class="co"># go to the directory where the .sh file is located</span></span>
+<span id="cb89-14"><a href="#cb89-14" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /u/home/j/jia/mice_colon/indiv_network</span>
+<span id="cb89-15"><a href="#cb89-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-16"><a href="#cb89-16" aria-hidden="true" tabindex="-1"></a><span class="ex">qsub</span> hoffman2_indiv_network.sh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>After submitting the job, you can check the status of the job using the following command:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check the log file for the job</span></span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a><span class="co"># in the run directory</span></span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-lh</span></span>
+<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> joblog.<span class="op">&lt;</span>job_id<span class="op">&gt;</span></span>
+<span id="cb90-5"><a href="#cb90-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-6"><a href="#cb90-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-7"><a href="#cb90-7" aria-hidden="true" tabindex="-1"></a><span class="co"># check the status of your own jobs</span></span>
+<span id="cb90-8"><a href="#cb90-8" aria-hidden="true" tabindex="-1"></a><span class="ex">qstat</span> <span class="at">-u</span> <span class="va">$USER</span></span>
+<span id="cb90-9"><a href="#cb90-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-10"><a href="#cb90-10" aria-hidden="true" tabindex="-1"></a><span class="co"># or check the status of all jobs</span></span>
+<span id="cb90-11"><a href="#cb90-11" aria-hidden="true" tabindex="-1"></a><span class="ex">qstat</span></span>
+<span id="cb90-12"><a href="#cb90-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-13"><a href="#cb90-13" aria-hidden="true" tabindex="-1"></a><span class="co"># or check the status of a specific job</span></span>
+<span id="cb90-14"><a href="#cb90-14" aria-hidden="true" tabindex="-1"></a><span class="ex">qstat</span> <span class="op">&lt;</span>job_id<span class="op">&gt;</span></span>
+<span id="cb90-15"><a href="#cb90-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-16"><a href="#cb90-16" aria-hidden="true" tabindex="-1"></a><span class="co"># or check the status of all jobs in a queue</span></span>
+<span id="cb90-17"><a href="#cb90-17" aria-hidden="true" tabindex="-1"></a><span class="ex">qstat</span> <span class="at">-q</span></span>
+<span id="cb90-18"><a href="#cb90-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-19"><a href="#cb90-19" aria-hidden="true" tabindex="-1"></a><span class="co"># or check the status of all jobs in a queue with more details</span></span>
+<span id="cb90-20"><a href="#cb90-20" aria-hidden="true" tabindex="-1"></a><span class="ex">qstat</span> <span class="at">-g</span> c</span>
+<span id="cb90-21"><a href="#cb90-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-22"><a href="#cb90-22" aria-hidden="true" tabindex="-1"></a><span class="co"># or check the status of all jobs in a queue with even more details</span></span>
+<span id="cb90-23"><a href="#cb90-23" aria-hidden="true" tabindex="-1"></a><span class="ex">qstat</span> <span class="at">-g</span> t</span>
+<span id="cb90-24"><a href="#cb90-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-25"><a href="#cb90-25" aria-hidden="true" tabindex="-1"></a><span class="co"># or check the status of all jobs in a queue with the most details</span></span>
+<span id="cb90-26"><a href="#cb90-26" aria-hidden="true" tabindex="-1"></a><span class="ex">qstat</span> <span class="at">-f</span></span>
+<span id="cb90-27"><a href="#cb90-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-28"><a href="#cb90-28" aria-hidden="true" tabindex="-1"></a><span class="co"># or check the status of all jobs in a queue with the most details and filter by user</span></span>
+<span id="cb90-29"><a href="#cb90-29" aria-hidden="true" tabindex="-1"></a><span class="ex">qstat</span> <span class="at">-f</span> <span class="at">-u</span> <span class="va">$USER</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 
