@@ -3172,7 +3172,7 @@ loaded via a namespace (and not attached):
 -rw-rw-r--@  1 jacenai  staff  13332 Jan  5  2023 CHANGELOG.txt
 -rw-rw-r--@  1 jacenai  staff   2518 Jan  5  2023 LICENSE.txt
 -rw-rw-r--@  1 jacenai  staff   2884 Jan  6  2023 SHA256SUMS.txt
-drwxr-xr-x@ 27 jacenai  staff    864 Sep 29 00:30 hosp
+drwxr-xr-x@ 27 jacenai  staff    864 Sep 29 13:34 hosp
 drwxr-xr-x@ 13 jacenai  staff    416 Mar  9  2024 icu
 lrwxr-xr-x@  1 jacenai  staff     49 Jan 24  2024 mimic-iv-2.2 -&gt; /Users/jacenai/Desktop/BIOSTAT_203B/mimic-iv-2.2/</code></pre>
 </div>
@@ -3416,7 +3416,7 @@ Number of lines in /Users/jacenai/mimic/hosp/patients.csv.gz:   299713</code></p
 <span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-lh</span> ~/mimic/hosp/labevents.csv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>-rw-rw-r--@ 1 jacenai  staff   1.8G Jan  5  2023 /Users/jacenai/mimic/hosp/labevents.csv.gz
--rw-r--r--@ 1 jacenai  staff    13G Sep 29 13:34 /Users/jacenai/mimic/hosp/labevents.csv</code></pre>
+-rw-r--r--@ 1 jacenai  staff    13G Sep 29 13:41 /Users/jacenai/mimic/hosp/labevents.csv</code></pre>
 </div>
 </div>
 <p>Then, <strong>comparing the run times:</strong> From the output below, in general, the run time of <code>zcat</code> on the compressed file is more than the run time of <code>wc</code> on the uncompressed file.</p>
@@ -3429,14 +3429,14 @@ Number of lines in /Users/jacenai/mimic/hosp/patients.csv.gz:   299713</code></p
 <div class="cell-output cell-output-stdout">
 <pre><code> 118171368
 
-real    0m14.471s
-user    0m22.398s
-sys 0m1.556s
+real    0m14.257s
+user    0m22.131s
+sys 0m1.581s
  118171368 /Users/jacenai/mimic/hosp/labevents.csv
 
-real    0m18.526s
-user    0m12.238s
-sys 0m1.558s</code></pre>
+real    0m14.162s
+user    0m12.355s
+sys 0m1.469s</code></pre>
 </div>
 </div>
 <p><strong>Trade-off between storage and speed:</strong> compressed files save storage space but may require additional time for decompression during access. Uncompressed files provide faster access but consume more storage space. If storage space is a critical concern and access speed can be tolerated, compression is beneficial. However, if rapid access is crucial and storage space is not a limiting factor, using uncompressed files might be preferred.</p>
@@ -3629,7 +3629,7 @@ Su Mo Tu We Th Fr Sa
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">date</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Sun Sep 29 13:34:46 PDT 2024</code></pre>
+<pre><code>Sun Sep 29 13:41:57 PDT 2024</code></pre>
 </div>
 </div>
 <p><code>date</code>: Prints the current date and time.</p>
@@ -3657,14 +3657,14 @@ Su Mo Tu We Th Fr Sa
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb64"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">uptime</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>13:34  up 4 days, 18:50, 2 users, load averages: 2.72 2.23 2.31</code></pre>
+<pre><code>13:41  up 4 days, 18:57, 2 users, load averages: 2.79 2.56 2.44</code></pre>
 </div>
 </div>
 <p><code>uptime</code> command in Linux is used to display the current time, how long the system has been running, and information about the system’s load averages. It provides a quick overview of the system’s status and activity.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb66"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">who</span> am i</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>jacenai                       Sep 29 13:34 </code></pre>
+<pre><code>jacenai                       Sep 29 13:41 </code></pre>
 </div>
 </div>
 <p><code>who am i</code> command in Linux is used to display information about the current user who is logged into the system. It provides details such as the username and the time the user logged in. In my case, the username is “jacenai,” and the time the user logged in is “Jan 24 10:11”</p>
@@ -3679,10 +3679,10 @@ jacenai          ttys001      Sep 29 13:33 </code></pre>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb70"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">w</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>13:34  up 4 days, 18:50, 2 users, load averages: 2.72 2.23 2.31
+<pre><code>13:41  up 4 days, 18:57, 2 users, load averages: 2.79 2.56 2.44
 USER       TTY      FROM    LOGIN@  IDLE WHAT
 jacenai    console  -      Tue18   4days -
-jacenai    s001     -      13:33       - ssh jia@hoffman2.idre.ucla.edu</code></pre>
+jacenai    s001     -      13:33       6 ssh jia@hoffman2.idre.ucla.edu</code></pre>
 </div>
 </div>
 <p><code>w</code> command displays information about the currently logged-in users and their activities. It provides a summary of user-related information, including details about each user’s login session, the time they’ve been idle, and the commands they are currently running.</p>
@@ -3846,6 +3846,7 @@ sys 0m0.001s</code></pre>
 <span id="cb84-31"><a href="#cb84-31" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb84-32"><a href="#cb84-32" aria-hidden="true" tabindex="-1"></a><span class="fu">hostname</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p><a href="https://ryanstutorials.net/linuxtutorial/cheatsheetvi.php">Cheat sheet</a> for vi</p>
 <p><strong>Details on the run_metilene_comparisons_hoffman2.sh file.</strong></p>
 <p>Here I used a loop to compare the methylation levels of different groups of samples. The script is as follows:</p>
 <div class="cell" data-layout-align="center">
