@@ -3172,7 +3172,7 @@ loaded via a namespace (and not attached):
 -rw-rw-r--@  1 jacenai  staff  13332 Jan  5  2023 CHANGELOG.txt
 -rw-rw-r--@  1 jacenai  staff   2518 Jan  5  2023 LICENSE.txt
 -rw-rw-r--@  1 jacenai  staff   2884 Jan  6  2023 SHA256SUMS.txt
-drwxr-xr-x@ 27 jacenai  staff    864 Sep 29 00:27 hosp
+drwxr-xr-x@ 27 jacenai  staff    864 Sep 29 00:30 hosp
 drwxr-xr-x@ 13 jacenai  staff    416 Mar  9  2024 icu
 lrwxr-xr-x@  1 jacenai  staff     49 Jan 24  2024 mimic-iv-2.2 -&gt; /Users/jacenai/Desktop/BIOSTAT_203B/mimic-iv-2.2/</code></pre>
 </div>
@@ -3416,7 +3416,7 @@ Number of lines in /Users/jacenai/mimic/hosp/patients.csv.gz:   299713</code></p
 <span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-lh</span> ~/mimic/hosp/labevents.csv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>-rw-rw-r--@ 1 jacenai  staff   1.8G Jan  5  2023 /Users/jacenai/mimic/hosp/labevents.csv.gz
--rw-r--r--@ 1 jacenai  staff    13G Sep 29 00:30 /Users/jacenai/mimic/hosp/labevents.csv</code></pre>
+-rw-r--r--@ 1 jacenai  staff    13G Sep 29 13:34 /Users/jacenai/mimic/hosp/labevents.csv</code></pre>
 </div>
 </div>
 <p>Then, <strong>comparing the run times:</strong> From the output below, in general, the run time of <code>zcat</code> on the compressed file is more than the run time of <code>wc</code> on the uncompressed file.</p>
@@ -3429,14 +3429,14 @@ Number of lines in /Users/jacenai/mimic/hosp/patients.csv.gz:   299713</code></p
 <div class="cell-output cell-output-stdout">
 <pre><code> 118171368
 
-real    0m14.214s
-user    0m22.070s
-sys 0m1.578s
+real    0m14.471s
+user    0m22.398s
+sys 0m1.556s
  118171368 /Users/jacenai/mimic/hosp/labevents.csv
 
-real    0m14.313s
-user    0m12.436s
-sys 0m1.442s</code></pre>
+real    0m18.526s
+user    0m12.238s
+sys 0m1.558s</code></pre>
 </div>
 </div>
 <p><strong>Trade-off between storage and speed:</strong> compressed files save storage space but may require additional time for decompression during access. Uncompressed files provide faster access but consume more storage space. If storage space is a critical concern and access speed can be tolerated, compression is beneficial. However, if rapid access is crucial and storage space is not a limiting factor, using uncompressed files might be preferred.</p>
@@ -3629,14 +3629,14 @@ Su Mo Tu We Th Fr Sa
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">date</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Sun Sep 29 00:30:38 PDT 2024</code></pre>
+<pre><code>Sun Sep 29 13:34:46 PDT 2024</code></pre>
 </div>
 </div>
 <p><code>date</code>: Prints the current date and time.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb58"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hostname</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>jacens-air.lan</code></pre>
+<pre><code>wifi-169-232-80-251.host.ucla.edu</code></pre>
 </div>
 </div>
 <p><code>hostname</code>: prints the hostname of the server that I’m currently logged into.</p>
@@ -3650,21 +3650,21 @@ Su Mo Tu We Th Fr Sa
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb62"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">uname</span> <span class="at">-a</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Darwin jacens-air.lan 23.6.0 Darwin Kernel Version 23.6.0: Mon Jul 29 21:16:46 PDT 2024; root:xnu-10063.141.2~1/RELEASE_ARM64_T8112 arm64</code></pre>
+<pre><code>Darwin wifi-169-232-80-251.host.ucla.edu 23.6.0 Darwin Kernel Version 23.6.0: Mon Jul 29 21:16:46 PDT 2024; root:xnu-10063.141.2~1/RELEASE_ARM64_T8112 arm64</code></pre>
 </div>
 </div>
 <p><code>uname -a</code> command in Linux is used to display detailed information about the system’s kernel and hardware. It provides a comprehensive set of details about the system, including the kernel name, network node hostname, kernel release, kernel version, machine hardware name, processor type, hardware platform, and the operating system. In my case, the kernel name is “Darwin,” and the network node hostname is “s-169-232-81-195.resnet.ucla.edu.” The kernel release, version 22.4.0, indicates the specific version of the Darwin kernel. The timestamp “Mon Mar 6 21:01:02 PST 2023” denotes when the kernel was built.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb64"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">uptime</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> 0:30  up 4 days,  5:46, 3 users, load averages: 3.23 2.81 2.57</code></pre>
+<pre><code>13:34  up 4 days, 18:50, 2 users, load averages: 2.72 2.23 2.31</code></pre>
 </div>
 </div>
 <p><code>uptime</code> command in Linux is used to display the current time, how long the system has been running, and information about the system’s load averages. It provides a quick overview of the system’s status and activity.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb66"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">who</span> am i</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>jacenai                       Sep 29 00:30 </code></pre>
+<pre><code>jacenai                       Sep 29 13:34 </code></pre>
 </div>
 </div>
 <p><code>who am i</code> command in Linux is used to display information about the current user who is logged into the system. It provides details such as the username and the time the user logged in. In my case, the username is “jacenai,” and the time the user logged in is “Jan 24 10:11”</p>
@@ -3672,19 +3672,17 @@ Su Mo Tu We Th Fr Sa
 <div class="sourceCode cell-code" id="cb68"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">who</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>jacenai          console      Sep 24 18:44 
-jacenai          ttys005      Sep 28 23:12 
-jacenai          ttys006      Sep 28 23:35 </code></pre>
+jacenai          ttys001      Sep 29 13:33 </code></pre>
 </div>
 </div>
 <p><code>who</code> command displays information about currently logged-in users. It provides details such as the username, terminal, login time</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb70"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">w</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> 0:30  up 4 days,  5:46, 3 users, load averages: 3.23 2.81 2.57
+<pre><code>13:34  up 4 days, 18:50, 2 users, load averages: 2.72 2.23 2.31
 USER       TTY      FROM    LOGIN@  IDLE WHAT
 jacenai    console  -      Tue18   4days -
-jacenai    s005     -      Sat23       - ssh jia@hoffman2.idre.ucla.edu
-jacenai    s006     -      Sat23      26 -zsh</code></pre>
+jacenai    s001     -      13:33       - ssh jia@hoffman2.idre.ucla.edu</code></pre>
 </div>
 </div>
 <p><code>w</code> command displays information about the currently logged-in users and their activities. It provides a summary of user-related information, including details about each user’s login session, the time they’ve been idle, and the commands they are currently running.</p>
@@ -3698,16 +3696,16 @@ jacenai    s006     -      Sat23      26 -zsh</code></pre>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb74"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">last</span> <span class="kw">|</span> <span class="fu">head</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>jacenai    ttys006                         Sat Sep 28 23:35   still logged in
-jacenai    ttys005                         Sat Sep 28 23:12   still logged in
-jacenai    ttys006                         Sat Sep 28 19:08 - 19:08  (00:00)
-jacenai    ttys006                         Sat Sep 28 19:04 - 19:04  (00:00)
-jacenai    ttys006                         Sat Sep 28 18:48 - 18:48  (00:00)
-jacenai    ttys005                         Sat Sep 28 18:21 - 18:21  (00:00)
-jacenai    ttys000                         Wed Sep 25 12:41 - 12:41  (00:00)
-jacenai    console                         Tue Sep 24 18:44   still logged in
-reboot time                                Tue Sep 24 18:44
-shutdown time                              Tue Sep 24 18:44</code></pre>
+<pre><code>jacenai    ttys001                         Sun Sep 29 13:33   still logged in
+jacenai    ttys001                         Sun Sep 29 11:48 - 11:48  (00:00)
+jacenai    ttys003                         Sun Sep 29 11:38 - 11:38  (00:00)
+jacenai    ttys001                         Sun Sep 29 11:34 - 11:34  (00:00)
+jacenai    ttys005                         Sun Sep 29 11:06 - 11:06  (00:00)
+jacenai    ttys006                         Sun Sep 29 09:54 - 09:54  (00:00)
+jacenai    ttys005                         Sun Sep 29 09:48 - 09:48  (00:00)
+jacenai    ttys005                         Sun Sep 29 08:49 - 08:49  (00:00)
+jacenai    ttys005                         Sun Sep 29 08:44 - 08:44  (00:00)
+jacenai    ttys006                         Sat Sep 28 23:35 - 23:35  (00:00)</code></pre>
 </div>
 </div>
 <p><code>last</code> command in Linux is used to display information about previously logged-in users, including their login and logout times. When combined with the <code>head</code> command, it limits the output to the specified 10 newest lines.</p>
@@ -3786,29 +3784,32 @@ sys 0m0.001s</code></pre>
 <span id="cb83-22"><a href="#cb83-22" aria-hidden="true" tabindex="-1"></a><span class="co"># when uploading to Hoffman2, making sure that I&#39;m in the local directory</span></span>
 <span id="cb83-23"><a href="#cb83-23" aria-hidden="true" tabindex="-1"></a><span class="fu">scp</span> <span class="at">-r</span> /Users/jacenai/Desktop/Matteo_Lab/LabResourse/CellFi/samples jia@dtn2.hoffman2.idre.ucla.edu:/u/home/j/jia/CellFi</span>
 <span id="cb83-24"><a href="#cb83-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb83-25"><a href="#cb83-25" aria-hidden="true" tabindex="-1"></a><span class="co"># load the python module on hoffman2</span></span>
-<span id="cb83-26"><a href="#cb83-26" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load python/2.7.15</span>
+<span id="cb83-25"><a href="#cb83-25" aria-hidden="true" tabindex="-1"></a><span class="co"># rename the file</span></span>
+<span id="cb83-26"><a href="#cb83-26" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> hoffman2_indiv_network.py hoffman2_indiv_network_1_12.py</span>
 <span id="cb83-27"><a href="#cb83-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb83-28"><a href="#cb83-28" aria-hidden="true" tabindex="-1"></a><span class="co"># activate the virtual environment</span></span>
-<span id="cb83-29"><a href="#cb83-29" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ./Env/bin/activate</span>
+<span id="cb83-28"><a href="#cb83-28" aria-hidden="true" tabindex="-1"></a><span class="co"># load the python module on hoffman2</span></span>
+<span id="cb83-29"><a href="#cb83-29" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load python/2.7.15</span>
 <span id="cb83-30"><a href="#cb83-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb83-31"><a href="#cb83-31" aria-hidden="true" tabindex="-1"></a><span class="co"># check the python version</span></span>
-<span id="cb83-32"><a href="#cb83-32" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">--version</span></span>
+<span id="cb83-31"><a href="#cb83-31" aria-hidden="true" tabindex="-1"></a><span class="co"># activate the virtual environment</span></span>
+<span id="cb83-32"><a href="#cb83-32" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ./Env/bin/activate</span>
 <span id="cb83-33"><a href="#cb83-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb83-34"><a href="#cb83-34" aria-hidden="true" tabindex="-1"></a><span class="co"># check the pandas version</span></span>
-<span id="cb83-35"><a href="#cb83-35" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-c</span> <span class="st">&quot;import pandas as pd; print(pd.__version__)&quot;</span></span>
-<span id="cb83-36"><a href="#cb83-36" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> show pandas</span>
-<span id="cb83-37"><a href="#cb83-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb83-38"><a href="#cb83-38" aria-hidden="true" tabindex="-1"></a><span class="co"># check the numpy version</span></span>
-<span id="cb83-39"><a href="#cb83-39" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-c</span> <span class="st">&quot;import numpy as np; print(np.__version__)&quot;</span></span>
-<span id="cb83-40"><a href="#cb83-40" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> show numpy</span>
-<span id="cb83-41"><a href="#cb83-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb83-42"><a href="#cb83-42" aria-hidden="true" tabindex="-1"></a><span class="co"># check the scipy version</span></span>
-<span id="cb83-43"><a href="#cb83-43" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-c</span> <span class="st">&quot;import scipy as sp; print(sp.__version__)&quot;</span></span>
-<span id="cb83-44"><a href="#cb83-44" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> show scipy</span>
-<span id="cb83-45"><a href="#cb83-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb83-46"><a href="#cb83-46" aria-hidden="true" tabindex="-1"></a><span class="co"># quit hoffman2</span></span>
-<span id="cb83-47"><a href="#cb83-47" aria-hidden="true" tabindex="-1"></a><span class="bu">exit</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb83-34"><a href="#cb83-34" aria-hidden="true" tabindex="-1"></a><span class="co"># check the python version</span></span>
+<span id="cb83-35"><a href="#cb83-35" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">--version</span></span>
+<span id="cb83-36"><a href="#cb83-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb83-37"><a href="#cb83-37" aria-hidden="true" tabindex="-1"></a><span class="co"># check the pandas version</span></span>
+<span id="cb83-38"><a href="#cb83-38" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-c</span> <span class="st">&quot;import pandas as pd; print(pd.__version__)&quot;</span></span>
+<span id="cb83-39"><a href="#cb83-39" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> show pandas</span>
+<span id="cb83-40"><a href="#cb83-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb83-41"><a href="#cb83-41" aria-hidden="true" tabindex="-1"></a><span class="co"># check the numpy version</span></span>
+<span id="cb83-42"><a href="#cb83-42" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-c</span> <span class="st">&quot;import numpy as np; print(np.__version__)&quot;</span></span>
+<span id="cb83-43"><a href="#cb83-43" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> show numpy</span>
+<span id="cb83-44"><a href="#cb83-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb83-45"><a href="#cb83-45" aria-hidden="true" tabindex="-1"></a><span class="co"># check the scipy version</span></span>
+<span id="cb83-46"><a href="#cb83-46" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-c</span> <span class="st">&quot;import scipy as sp; print(sp.__version__)&quot;</span></span>
+<span id="cb83-47"><a href="#cb83-47" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> show scipy</span>
+<span id="cb83-48"><a href="#cb83-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb83-49"><a href="#cb83-49" aria-hidden="true" tabindex="-1"></a><span class="co"># quit hoffman2</span></span>
+<span id="cb83-50"><a href="#cb83-50" aria-hidden="true" tabindex="-1"></a><span class="bu">exit</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Example: Run the .sh file on the cluster</p>
 <div class="cell" data-layout-align="center">
