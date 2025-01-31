@@ -1,0 +1,1133 @@
+---
+title: "Linux Basic, Unix Shell Commands, and HPC"
+author: "Jiachen Ai"
+format:
+  html:
+    theme: cosmo
+    embed-resources: true
+    number-sections: false
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+knitr:
+  opts_chunk: 
+    cache: false    
+    echo: true
+    fig.align: 'center'
+    fig.width: 6
+    fig.height: 4
+    message: FALSE
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+Display machine information for reproducibility:
+
+```{r}
+#| eval: true
+sessionInfo()
+```
+
+
+
+## Data ethics training
+
+This exercise (and later in this course) uses the [MIMIC-IV data
+v2.2](https://physionet.org/content/mimiciv/2.2/), a freely accessible
+critical care database developed by the MIT Lab for Computational
+Physiology. Follow the instructions at
+<https://mimic.mit.edu/docs/gettingstarted/> to (1) complete the CITI
+`Data or Specimens Only Research` course and (2) obtain the PhysioNet
+credential for using the MIMIC-IV data. Display the verification links
+to your completion report and completion certificate here.
+
+**Answer:**
+
+I completed the CITI training on 1/18/2021. The completion report is
+available at
+[here](https://www.citiprogram.org/verify/?k6b4494ee-7938-4b63-920b-1da005d66727-60622234).
+The completion certificate is available at
+[here](https://www.citiprogram.org/verify/?w2edd6762-e466-4ba4-b34d-4928a65f485d-60622234).
+
+I also obtained the PhysioNet credential for using the MIMIC-IV data.
+Here is the screenshot of my PhysioNet credentialing.![screenshot of
+Credentialing](./Credential.jpg)
+
+## Linux Shell Commands
+
+1.  Make the MIMIC v2.2 data available at location `~/mimic`.
+
+```{bash}
+#| eval: false
+ls -l ~/mimic/
+```
+
+Refer to the documentation <https://physionet.org/content/mimiciv/2.2/>
+for details of data files. Please, do **not** put these data files into
+Git; they are big. Do **not** copy them into your directory. Do **not**
+decompress the gz data files. These create unnecessary big files and are
+not big-data-friendly practices. Read from the data folder `~/mimic`
+directly in following exercises.
+
+Use Bash commands to answer following questions.
+
+**Answer:**
+
+I downloaded the MIMIC-IV v2.2 data to my local machine. I create a
+symbolic link to the original directory to MIMIC-IV v2.2 data under the
+path `~/mimic` in my command panel.
+
+```{bash}
+#| eval: false  
+ln -s /Users/jacenai/Documents/23W/BIOSTAT_203B/mimic-iv-2.2/  ~/mimic
+```
+
+Now, the data files are available at `~/mimic`. The data files are not
+put into Git. The data files are not copied into my directory. The gz
+data files are not decompressed.
+
+```{bash}
+ls -l ~/mimic/
+```
+
+2.  Display the contents in the folders `hosp` and `icu` using Bash
+    command `ls -l`. Why are these data files distributed as `.csv.gz`
+    files instead of `.csv` (comma separated values) files? Read the
+    page <https://mimic.mit.edu/docs/iv/> to understand what's in each
+    folder.
+
+**Answer:** This is the content of the folder `hosp`:
+
+```{bash}
+ls -l ~/mimic/hosp
+```
+
+This is the content of the folder `icu`:
+
+```{bash}
+ls -l ~/mimic/icu
+```
+
+The reason for why these data files are distributed as `.csv.gz` files
+instead of `.csv` files is: the `.csv.gz` indicates that the file is
+compressed using gzip compression. It used compressed files rather than
+the `.csv` files is because the data set contains comprehensive
+information for each patient while they were in the hospital, so it
+would need huge storage space if not compressed. Compression reduces the
+file size, making it quicker to download and transfer and requiring less
+bandwidth when downloading, which can be important for users with
+limited internet bandwidth.
+
+3.  Briefly describe what Bash commands `zcat`, `zless`, `zmore`, and
+    `zgrep` do.
+
+**Answer:**
+
+-   `zcat` is used to display the content of one or more compressed
+    files on the standard output.
+
+-   `zless` is used to view the contents of a compressed file one page
+    at a time. It provides a convenient way to scroll through the
+    contents of a compressed file.
+
+-   `zmore` is similar to `zless` and serves as a pager for compressed
+    files and is used to view the contents of a compressed file one page
+    at a time. It primarily supports forward navigation through the
+    content.
+
+-   `zgrep` is used to search for a pattern within one or more
+    compressed files.
+
+4.  (Looping in Bash) What's the output of the following bash script?
+
+```{bash}
+#| eval: false
+for datafile in ~/mimic/hosp/{a,l,pa}*.gz
+do
+  ls -l $datafile
+done
+```
+
+Display the number of lines in each data file using a similar loop.
+(Hint: combine linux commands `zcat <` and `wc -l`.)
+
+**Answer:**
+
+Display the number of lines in each data file using a similar loop:
+
+```{bash}
+for datafile in ~/mimic/hosp/{a,l,pa}*.gz
+do
+  echo "Number of lines in $datafile: $(zcat < $datafile | wc -l)"
+done
+```
+
+5.  Display the first few lines of `admissions.csv.gz`. How many rows
+    are in this data file? How many unique patients (identified by
+    `subject_id`) are in this data file? Do they match the number of
+    patients listed in the `patients.csv.gz` file? (Hint: combine Linux
+    commands `zcat <`, `head`/`tail`, `awk`, `sort`, `uniq`, `wc`, and
+    so on.)
+
+**Answer:**
+
+Display the first few lines of admissions.csv.gz
+
+```{bash}
+zcat < ~/mimic/hosp/admissions.csv.gz | head -10
+```
+
+```{bash}
+#Count the number of rows in admissions.csv.gz
+row_count=$(zcat < ~/mimic/hosp/admissions.csv.gz | wc -l)
+echo "Number of rows in admissions.csv.gz: $row_count"
+```
+
+```{bash}
+#Count the number of unique patients (identified by subject_id) in admissions.csv.gz:
+subject_count=$(zcat < ~/mimic/hosp/admissions.csv.gz | tail -n +2 | awk -F ',' '{print $1}' | sort -u | wc -l)
+echo "Number of unique patients in admissions.csv.gz (excluding header): $subject_count"
+```
+
+```{bash}
+#Count the number of unique patients (identified by subject_id) in patients.csv.gz:
+subject_count=$(zcat < ~/mimic/hosp/patients.csv.gz | tail -n +2 | awk -F ',' '{print $1}' | sort -u | wc -l)
+echo "Number of unique patients in patients.csv.gz (excluding header): $subject_count"
+```
+
+Therefore, the number of patients listed in the `patients.csv.gz` file
+doesn't match the number of unique patients in the `admissions.csv.gz`
+file.
+
+6.  What are the possible values taken by each of the variable
+    `admission_type`, `admission_location`, `insurance`, and
+    `ethnicity`? Also report the count for each unique value of these
+    variables. (Hint: combine Linux commands `zcat`, `head`/`tail`,
+    `awk`, `uniq -c`, `wc`, and so on; skip the header line.)
+
+**Answer:**
+
+First, getting to know the variables' names.
+
+```{bash}
+zcat < ~/mimic/hosp/admissions.csv.gz | head -n 1
+```
+
+Get possible values taken by the variable `admission_type` and its count
+
+```{bash}
+zcat < ~/mimic/hosp/admissions.csv.gz | awk -F',' 'NR > 1 {print $6}' | sort | uniq -c
+```
+
+Get possible values taken by the variable `admission_location` and its
+count
+
+```{bash}
+zcat < ~/mimic/hosp/admissions.csv.gz | awk -F',' 'NR > 1 {print $8}' | sort | uniq -c
+```
+
+Get possible values taken by the variable `insurance` and its count
+
+```{bash}
+zcat < ~/mimic/hosp/admissions.csv.gz | awk -F',' 'NR > 1 {print $10}' | sort | uniq -c
+```
+
+Get possible values taken by the variable `race`/`ethnicity` and its
+count
+
+```{bash}
+zcat < ~/mimic/hosp/admissions.csv.gz | awk -F',' 'NR > 1 {print $13}' | sort | uniq -c
+```
+
+7.  *To compress, or not to compress. That's the question.* Let's focus
+    on the big data file `labevents.csv.gz`. Compare compressed gz file
+    size to the uncompressed file size. Compare the run times of
+    `zcat < ~/mimic/labevents.csv.gz | wc -l` versus
+    `wc -l labevents.csv`. Discuss the trade off between storage and
+    speed for big data files. (Hint:
+    `gzip -dk < FILENAME.gz > ./FILENAME`. Remember to delete the large
+    `labevents.csv` file after the exercise.)
+
+**Answer:**
+
+First, **comparing the file sizes:** The compressed file size is 1.8G
+and the uncompressed file size is 13G. The uncompressed file size is
+more than 7 times larger than the compressed file size.
+
+```{bash}
+#compressed file size
+ls -lh ~/mimic/hosp/labevents.csv.gz
+
+#decompress the file 
+gzip -dk < ~/mimic/hosp/labevents.csv.gz > ~/mimic/hosp/labevents.csv
+
+#uncompressed file size
+ls -lh ~/mimic/hosp/labevents.csv
+
+```
+
+Then, **comparing the run times:** From the output below, in general,
+the run time of `zcat` on the compressed file is more than the run time
+of `wc` on the uncompressed file.
+
+```{bash}
+#run time of zcat on the compressed file
+time zcat < ~/mimic/hosp/labevents.csv.gz | wc -l
+
+#run time of wc on the uncompressed file
+time wc -l ~/mimic/hosp/labevents.csv
+
+```
+
+**Trade-off between storage and speed:** compressed files save storage
+space but may require additional time for decompression during access.
+Uncompressed files provide faster access but consume more storage space.
+If storage space is a critical concern and access speed can be
+tolerated, compression is beneficial. However, if rapid access is
+crucial and storage space is not a limiting factor, using uncompressed
+files might be preferred.
+
+```{bash}
+# remove the large uncompressed file
+rm ~/mimic/hosp/labevents.csv
+```
+
+## Text Mining: Who's popular in Price and Prejudice
+
+1.  You and your friend just have finished reading *Pride and Prejudice*
+    by Jane Austen. Among the four main characters in the book,
+    Elizabeth, Jane, Lydia, and Darcy, your friend thinks that Darcy was
+    the most mentioned. You, however, are certain it was Elizabeth.
+    Obtain the full text of the novel from
+    <http://www.gutenberg.org/cache/epub/42671/pg42671.txt> and save to
+    your local folder.
+
+```{bash}
+#| eval: false
+wget -nc http://www.gutenberg.org/cache/epub/42671/pg42671.txt
+```
+
+Explain what `wget -nc` does. Do **not** put this text file
+`pg42671.txt` in Git. Complete the following loop to tabulate the number
+of times each of the four characters is mentioned using Linux commands.
+
+```{bash}
+#| eval: false
+wget -nc http://www.gutenberg.org/cache/epub/42671/pg42671.txt
+for char in Elizabeth Jane Lydia Darcy
+do
+  echo $char:
+  # some bash commands here
+done
+```
+
+**Answer:**
+
+**Explanation**: The `wget` command with the option `-nc` is used to
+download a file from the web URL, but it will not overwrite an existing
+file. Specifically, `wget` is the command for retrieving files from the
+web; `-nc` stands for `no-clobber`. It ensures that `wget` won't
+overwrite existing files. If the file already exists locally, `wget`
+will not download it again.
+
+```{bash}
+wget -nc http://www.gutenberg.org/cache/epub/42671/pg42671.txt
+for char in Elizabeth Jane Lydia Darcy
+do
+  echo "$char:"
+  grep -o -i "$char" pg42671.txt | wc -l
+done
+```
+
+The number of times each of the four characters is: Elizabeth: 634 Jane:
+293 Lydia: 171 Darcy: 418.
+
+2.  What's the difference between the following two commands?
+
+```{bash}
+#| eval: false
+echo 'hello, world' > test1.txt
+```
+
+and
+
+```{bash}
+#| eval: false
+echo 'hello, world' >> test2.txt
+```
+
+**Answer:**
+
+In the first command `echo 'hello, world' > test1.txt`, `>` is used for
+output redirection and creates or overwrites the content of the
+specified file (`test1.txt`) with the output of the `echo` command.
+While for the second command `echo 'hello, world' >> test2.txt`, `>>` is
+also used for output redirection but appends the output of the `echo`
+command to the end of the specified file (`test2.txt`). In summary, `>`
+overwrites the file with new content, while `>>` appends the content to
+the end of the file.
+
+3.  Using your favorite text editor (e.g., `vi`), type the following and
+    save the file as `middle.sh`:
+
+```{bash eval=FALSE}
+#!/bin/sh
+# Select lines from the middle of a file.
+# Usage: bash middle.sh filename end_line num_lines
+head -n "$2" "$1" | tail -n "$3"
+```
+
+Using `chmod` to make the file executable by the owner, and run
+
+```{bash}
+#| eval: false
+./middle.sh pg42671.txt 20 5
+```
+
+Explain the output. Explain the meaning of `"$1"`, `"$2"`, and `"$3"` in
+this shell script. Why do we need the first line of the shell script?
+
+**Answer:**
+
+First, I used vi and type the command, and save the file as `middle.sh`
+
+```{bash}
+echo '#!/bin/sh' > middle.sh
+echo '# Select lines from the middle of a file.' >> middle.sh
+echo '# Usage: bash middle.sh filename end_line num_lines' >> middle.sh
+echo 'head -n "$2" "$1" | tail -n "$3"' >> middle.sh
+```
+
+Then, I used `chmod` to make the file executable by the owner and run
+the command
+
+```{bash}
+#make the middle.sh script executable 
+chmod a+x middle.sh
+./middle.sh pg42671.txt 20 5
+
+```
+
+**Output Explanation**: The output will be the 5 lines from the middle
+of the file `pg42671.txt`, starting from line 16 and ending at line 20.
+`pg42671.txt` specifies the file need to read, **`20`** means that it
+extracts the first 20 lines from the file **`pg42671.txt`**, and **`5`**
+means that it extracts the last 5 lines from the output received from
+that 20 lines.
+
+**Explanation of `$1`, `$2`, and `$3`**:
+
+Since the following code gives the same output as the command
+`head -20 pg42671.txt | tail -5`
+
+```{bash}
+head -20 pg42671.txt | tail -5
+```
+
+I can conclude that:
+
+`$1`: this is the first argument (**`$1`**) passed to the script. It
+represents the filename of the file. In this case, it's assumed to be a
+file named **`pg42671.txt`**.
+
+`$2`: this is the second argument (**`$2`**) passed to the script. It
+represents the end line number from which to start selecting lines. In
+this case, it's **`20`**, meaning that it extracts the first 20 lines
+from the file **`pg42671.txt`**.
+
+`$3`: this is the third argument (**`$3`**) passed to the script. It
+represents the number of lines to select from the middle. In this case,
+it's **`5`**, meaning that it extracts the last 5 lines from the output
+received from the **`head`** command. The result is then printed to the
+standard output.
+
+**Why do we need the first line of the shell script?** / Purpose of
+(`#!/bin/sh`):
+
+(`#!/bin/sh`) is essential for indicating which shell interpreter should
+be used to execute the script. In this case, it specifies /bin/sh, which
+is a common location for the Bourne shell. Without this line, the script
+might be interpreted by a different shell, and its behavior could vary.
+
+## More fun with Linux
+
+Try following commands in Bash and interpret the results: `cal`,
+`cal 2024`, `cal 9 1752` (anything unusual?), `date`, `hostname`,
+`arch`, `uname -a`, `uptime`, `who am i`, `who`, `w`, `id`,
+`last | head`, `echo {con,pre}{sent,fer}{s,ed}`, `time sleep 5`,
+`history | tail`.
+
+**Answer:**
+
+```{bash}
+cal
+```
+
+`cal`: displays the current month's calendar.
+
+```{bash}
+cal 2024
+```
+
+`cal 2024`: displays the calendar for the year 2024.
+
+```{bash}
+cal 9 1752
+```
+
+`cal 9 1752`: displays the calendar for September 1752. The calendar is
+unusual from the modern calendar because the switch from the Julian to
+the Gregorian calendar happened in September 1752, so the calendar
+missed 11 days form September 3 to September 13.
+
+```{bash}
+date
+```
+
+`date`: Prints the current date and time.
+
+```{bash}
+hostname
+```
+
+`hostname`: prints the hostname of the server that I'm currently logged
+into.
+
+```{bash}
+arch
+```
+
+`arch` command in Linux is used to display the architecture of the
+current system. It provides information about the instruction set
+architecture of the processor, helping users identify whether it's a
+32-bit or 64-bit system. In my case, my system is running on an arm64
+architecture, and it means that my processor supports 64-bit
+instructions.
+
+```{bash}
+uname -a
+```
+
+`uname -a` command in Linux is used to display detailed information
+about the system's kernel and hardware. It provides a comprehensive set
+of details about the system, including the kernel name, network node
+hostname, kernel release, kernel version, machine hardware name,
+processor type, hardware platform, and the operating system. In my case,
+the kernel name is "Darwin," and the network node hostname is
+"s-169-232-81-195.resnet.ucla.edu." The kernel release, version 22.4.0,
+indicates the specific version of the Darwin kernel. The timestamp "Mon
+Mar 6 21:01:02 PST 2023" denotes when the kernel was built.
+
+```{bash}
+uptime
+```
+
+`uptime` command in Linux is used to display the current time, how long
+the system has been running, and information about the system's load
+averages. It provides a quick overview of the system's status and
+activity.
+
+```{bash}
+who am i
+```
+
+`who am i` command in Linux is used to display information about the
+current user who is logged into the system. It provides details such as
+the username and the time the user logged in. In my case, the username
+is "jacenai," and the time the user logged in is "Jan 24 10:11"
+
+```{bash}
+who
+```
+
+`who` command displays information about currently logged-in users. It
+provides details such as the username, terminal, login time
+
+```{bash}
+w
+```
+
+`w` command displays information about the currently logged-in users and
+their activities. It provides a summary of user-related information,
+including details about each user's login session, the time they've been
+idle, and the commands they are currently running.
+
+```{bash}
+id
+```
+
+`id` command displays information about the user and group identities
+(ID) associated with the current user or a specified username.
+
+```{bash}
+last | head
+```
+
+`last` command in Linux is used to display information about previously
+logged-in users, including their login and logout times. When combined
+with the `head` command, it limits the output to the specified 10 newest
+lines.
+
+```{bash}
+echo {con,pre}{sent,fer}{s,ed}
+```
+
+`echo {con,pre}{sent,fer}{s,ed}` allows me to generate strings by
+specifying patterns enclosed in curly braces {}. The comma-separated
+values within the braces represent options, and this command generates
+all possible combinations of those options. In this case, the command
+generates the following strings: "consents," "conferred," "consented,"
+"confers," "presents," "presented," "prefers," and "preferred."
+
+```{bash}
+time sleep 5
+```
+
+`time` command in Linux is used to measure the execution time of a given
+command or script, and `sleep 5` pauses the shell for a duration of five
+seconds. When combined, the command measures the execution time of the
+`sleep 5` command.
+
+```{bash}
+history | tail
+```
+
+`history` command in Linux is used to display the last executed
+commands. When combined with the `tail` command, it limits the output to
+the specified 10 newest lines. In my case, since each command is
+executed seperately in the terminal, the output of the `history` command
+is empty. But I input expected output if the commands operate in line.
+
+```{bash}
+# 100  arch
+# 101  uname -a
+# 102  uptime
+# 103  who am i
+# 104  who
+# 105  w
+# 106  id
+# 107  last | head
+# 108  time sleep 5
+# 109  history | tail
+```
+
+## Book
+
+1.  Git clone the repository
+    <https://github.com/christophergandrud/Rep-Res-Book> for the book
+    *Reproducible Research with R and RStudio* to your local machine.
+
+2.  Open the project by clicking `rep-res-3rd-edition.Rproj` and compile
+    the book by clicking `Build Book` in the `Build` panel of RStudio.
+    (Hint: I was able to build `git_book` and `epub_book` but not
+    `pdf_book`.)
+
+The point of this exercise is (1) to get the book for free and (2) to
+see an example how a complicated project such as a book can be organized
+in a reproducible way.
+
+For grading purpose, include a screenshot of Section 4.1.5 of the book
+here.
+
+**Answer:** First, I used fork to create a copy of the repository on
+github. Then, I used the following command to clone the repository to my
+local machine.
+
+```{bash}
+#git clone git@github.com:jacenai/Rep-Res-Book.git git@github.com:jacenai/biostat-203b-2024-winter.git
+```
+
+Next, I opened the project by clicking `rep-res-3rd-edition.Rproj` and
+compiled the book by clicking `Build Book` in the `Build` panel of
+RStudio, during which I downloaded a few R packages. Finally, I was able
+to build `git_book`. The following screenshot shows the output of
+Section 4.1.5 of the book. ![screenshot of Section
+4.1.5](./Section4.1.5.png)
+
+## Notes on Usage of Hoffman2
+
+
+
+```{bash}
+#| eval: false
+# log into the cluster
+ssh jia@hoffman2.idre.ucla.edu
+
+# Then enter the password
+
+# request an interactive session (e.g., 4 hours and 4GB of memory)
+qrsh -l h_rt=4:00:00,h_data=4G
+
+# create a directory
+mkdir mice_colon
+
+# remove the directory
+rm -rf Bed_Human_Blood_Reed-2023-9206
+
+# remove the file
+rm Bed_Human_Blood_Reed-2023-9206/CIVR_UGA6_009C.bed
+
+# display the content of the directory
+cat /u/home/j/jia/CellFi/Bed_Human_Blood_Reed-2023-9206/CIVR_UGA6_009C.bed
+
+# copy the directory/file/folder to the cluster
+# when uploading to Hoffman2, making sure that I'm in the local directory
+scp -r /Users/jacenai/Desktop/Matteo_Lab/LabResourse/CellFi/samples jia@dtn2.hoffman2.idre.ucla.edu:/u/home/j/jia/CellFi
+
+# rename the file
+mv hoffman2_indiv_network.py hoffman2_indiv_network_1_12.py
+
+# move the file to the directory
+mv /u/home/j/jia/mice_colon/age_seperated_cor_matrix /u/home/j/jia/mice_colon/age_cluster/
+
+# load the python module on hoffman2
+module load python/2.7.15
+
+# activate the virtual environment
+source ./Env/bin/activate
+
+# check the python version
+python --version
+
+# check the pandas version
+python -c "import pandas as pd; print(pd.__version__)"
+pip show pandas
+
+# check the numpy version
+python -c "import numpy as np; print(np.__version__)"
+pip show numpy
+
+# check the scipy version
+python -c "import scipy as sp; print(sp.__version__)"
+pip show scipy
+
+# quit hoffman2
+exit
+```
+
+
+
+
+Example: Run the .sh file on the cluster
+
+```{bash}
+#| eval: false
+module load R
+
+qsub -l h_rt=4:00:00,h_data=8G -o $SCRATCH/metilene_job.out -j y -M jiachenai@g.ucla.edu -m bea -b y /u/home/j/jia/mice_colon/run_metilene_comparisons_hoffman2.sh
+# $SCRATCH is an environment variable that refers to a user-specific directory 
+# within the high-performance scratch storage area. This directory is used for 
+# temporary files and data that are needed during a job's execution. 
+# The scratch space is not backed up and is intended for intermediate or 
+# temporary storage while running jobs. You can access your scratch directory 
+# by using the $SCRATCH variable in paths, or directly via /u/scratch/username, 
+#   where username is your Hoffman2 username.
+
+# quit the running job
+qdel 4671427
+
+# check the status of the job
+qstat -u jia
+
+# edit the .sh file using vi
+vi run_metilene_comparisons_hoffman2.sh
+# looking for cheatsheet for vi
+
+
+# download the output file from the cluster to the local machine
+scp -r jia@dtn2.hoffman2.idre.ucla.edu:/u/scratch/j/jia/metilene_job.out jacenai@jacens-air.ad.medctr.ucla.edu:/Users/jacenai/Desktop/GSR_Project/Mice_Colon_Data/Hoffman2_output_short/
+# remember to Enable Remote Login on macOS: System Preferences > Sharing > Remote Login
+# Then enter the password of the local machine
+
+
+# check the local machine's user name and hostname
+whoami
+
+hostname
+
+
+# Better way: run the following command on local machine
+# Use `scp` to Pull the File from the Cluster
+scp jia@dtn2.hoffman2.idre.ucla.edu:/u/home/j/jia/mice_colon/wasserstein_network/output/wasserstein_network_results_78_82.csv /Users/jacenai/Desktop/GSR_Project/Mice_Colon_Data/wasserstein_network/
+
+# Using `rsync` for Large Files
+rsync -avz jia@dtn2.hoffman2.idre.ucla.edu:/u/home/j/jia/mice_colon/wasserstein_network/output/wasserstein_network_results_78_82.csv /Users/jacenai/Desktop/GSR_Project/Mice_Colon_Data/wasserstein_network/
+
+# Verify the File Transfer with `ls` command 
+ls /Users/jacenai/Desktop/GSR_Project/Mice_Colon_Data/wasserstein_network/
+```
+
+[Cheat sheet](https://ryanstutorials.net/linuxtutorial/cheatsheetvi.php) for vi
+
+**Details on the run_metilene_comparisons_hoffman2.sh file.**
+
+Here I used a loop to compare the methylation levels of different groups of samples. The script is as follows:
+
+```{bash}
+#| eval: false
+
+#!/bin/bash
+
+groups=("3M" "9M" "15M" "24M" "28M")
+datafile="/u/home/j/jia/mice_colon/whole_data.tsv"
+metilene_path="/u/home/j/jia/mice_colon/metilene_v0.2-8"
+output_dir="/u/home/j/jia/mice_colon/output"
+
+for ((i=0; i<${#groups[@]}-1; i++)); do
+    for ((j=i+1; j<${#groups[@]}; j++)); do
+        group_a=${groups[i]}
+        group_b=${groups[j]}
+        output_file="${output_dir}/${group_a}_vs_${group_b}_output.txt"
+        filtered_file="${output_dir}/${group_a}_vs_${group_b}_filtered.bed"
+        
+        echo "Running comparison: $group_a vs $group_b"
+        
+        # Run the comparison
+        $metilene_path/metilene_linux64 -a "$group_a" -b "$group_b" -m 8 "$datafile" | sort -V -k1,1 -k2,2n > "$output_file"
+        
+        # Run the filtering process
+        echo "Filtering results for $group_a vs $group_b"
+        perl $metilene_path/metilene_output.pl -q "$output_file" -o "$filtered_file" -p 0.05 -c 8 -l 8 -a "$group_a" -b "$group_b"
+        
+    done
+done
+
+
+```
+
+Run a python file on the cluster
+
+First, prepare all the necessary files and data on the cluster. For example, I have a python file named `hoffman2_indiv_network.py`.
+
+```{python}
+#| eval: false
+import pandas as pd
+import networkx as nx
+import matplotlib.pyplot as plt
+import community.community_louvain as community_louvain  # Correct import for modularity calculation
+import glob  # For file handling
+
+# Function to process each file
+def process_file(file_path):
+    
+    # Load the adjacency matrix
+    adjacency_matrix = pd.read_csv(file_path, index_col=0)
+    
+    # Create a graph from the adjacency matrix
+    G = nx.from_pandas_adjacency(adjacency_matrix)
+
+    # 1. Calculate Number of Edges
+    num_edges = G.number_of_edges()
+
+    # 2. Centrality (Degree Centrality)
+    degree_centrality = nx.degree_centrality(G)
+
+    # Calculate Average Degree Centrality
+    average_degree_centrality = sum(degree_centrality.values()) / len(degree_centrality)
+
+    # 3. Modularity
+    partition = community_louvain.best_partition(G)
+    modularity = community_louvain.modularity(partition, G)
+
+    # 4. Clustering Coefficient
+    average_clustering_coefficient = nx.average_clustering(G)
+
+    # Collect results in a dictionary
+    results = {
+        # Extract just the file name and also keep the part before _adjacency_matrix.csv
+        'Individual': file_path.split('/')[-1].split('_adjacency_matrix.csv')[0],
+        'Number of Edges': num_edges,
+        'Average Degree Centrality': average_degree_centrality,
+        'Modularity': modularity,
+        'Average Clustering Coefficient': average_clustering_coefficient
+    }
+
+    return results
+
+
+# Create an empty DataFrame to store results
+results_df = pd.DataFrame(columns=['Individual', 
+                                   'Number of Edges', 
+                                   'Average Degree Centrality', 
+                                   'Modularity', 
+                                   'Average Clustering Coefficient'])
+
+# Update the path to where your input files are located on Hoffman2
+input_path = '/u/home/j/jia/mice_colon/indiv_network/individual_network_stat_1_12/' 
+
+# Collect all CSV files in the input directory
+file_paths = glob.glob(input_path + '*.csv')
+
+# Process each file and append results to the DataFrame
+for file_path in file_paths:
+    result = process_file(file_path)
+    results_df = pd.concat([results_df, pd.DataFrame([result])], ignore_index=True)
+
+# Save the results to a CSV file instead of displaying them
+output_path = '/u/home/j/jia/mice_colon/indiv_network/output/'
+results_df.to_csv(output_path + 'individual_network_results_1_12.csv',
+                  index=False)
+
+print(f"Results saved to {output_path}")
+```
+
+Make sure that I have all packages installed on the cluster. If not, install them using the following commands in the terminal (on the cluster not in the python)
+
+```{bash}
+#| eval: false
+
+# first check all the modules available
+module av
+
+# check all the python modules available
+module av python
+
+# here's the example output:
+# ------------------------- /u/local/Modules/modulefiles -------------------------
+# python/2.7.15  python/3.6.8  python/3.9.6(default)  
+# python/2.7.18  python/3.7.3 
+
+# load the python module
+module load python/3.9.6
+
+pip3 install python-louvain(package name) --user
+
+# upload the script/code to the cluster
+scp -r /Users/jacenai/Desktop/GSR_Project/Colon_Methylation/indiv_network_submit.sh jia@dtn2.hoffman2.idre.ucla.edu:/u/home/j/jia/mice_colon/indiv_network
+```
+
+
+Then, create a .sh file (submission script) to run the python file. The .sh file is as follows:
+
+```{bash}
+#| eval: false
+
+#!/bin/bash
+#$ -cwd                        # Run the job in the current directory
+#$ -o joblog.$JOB_ID           # Save the job output in a file named "joblog.<job_id>"
+#$ -j y                        # Combine output and error logs
+#$ -l h_rt=24:00:00,h_data=8G  # Set runtime to 24 hours and memory to 8 GB
+#$ -pe shared 1                # Request 1 CPU core
+#$ -M jiachenai@g.ucla.edu     # Email notifications to your UCLA email
+#$ -m beas                     # Send email at the start, end, abort, or suspend
+
+# Print job start information
+echo "Job $JOB_ID started on:   " `hostname -s`
+echo "Job $JOB_ID started on:   " `date `
+echo " "
+
+# Initialize the module environment
+. /u/local/Modules/default/init/modules.sh
+
+# Load Python module
+module load python/3.9.6
+
+# Install required Python packages if not already installed
+echo "Installing required Python packages..."
+pip3 install --user pandas numpy scipy tqdm
+
+# Optional: Verify the Python environment
+python3 --version
+pip3 list | grep -E "pandas|numpy|scipy|tqdm"
+
+# Run the Python script
+echo "Running wasserstein_distance_hoffman2.py..."
+python3 /u/home/j/jia/mice_colon/wasserstein_network/wasserstein_distance_hoffman2.py
+
+# Check for errors during execution
+if [ $? -ne 0 ]; then
+  echo "Job $JOB_ID failed on:   " `hostname -s`
+  echo "Job $JOB_ID failed on:   " `date `
+  echo "Please check the log file for details: joblog.$JOB_ID"
+  exit 1
+fi
+
+# Print job end information
+echo "Job $JOB_ID completed successfully on:   " `hostname -s`
+echo "Job $JOB_ID ended on:   " `date `
+
+
+```
+
+Another example (with creating virtual environment):
+
+```{bash}
+#| eval: false
+#!/bin/bash
+#$ -cwd                        # Run the job in the current directory
+#$ -o joblog.$JOB_ID           # Save the job output in a file named "joblog.<job_id>"
+#$ -j y                        # Combine output and error logs
+#$ -l h_rt=24:00:00,h_data=8G  # Set runtime to 24 hours and memory to 8 GB
+#$ -pe shared 1                # Request 1 CPU core
+#$ -M jiachenai@g.ucla.edu     # Email notifications to your UCLA email
+#$ -m beas                     # Send email at the start, end, abort, or suspend
+
+# Print job start information
+echo "Job $JOB_ID started on:   " `hostname -s`
+echo "Job $JOB_ID started on:   " `date`
+echo " "
+
+# Initialize the module environment
+. /u/local/Modules/default/init/modules.sh
+
+# Load Python module
+module load python/3.9.6
+
+# Set up a virtual environment
+VENV_DIR="/u/home/j/jia/python_envs/wasserstein_env"
+if [ ! -d "$VENV_DIR" ]; then
+  echo "Creating virtual environment..."
+  python3 -m venv $VENV_DIR
+fi
+
+# Activate the virtual environment
+source $VENV_DIR/bin/activate
+
+# Install required Python packages (if not already installed)
+REQUIRED_PACKAGES="pandas numpy scipy tqdm networkx python-louvain"
+for PACKAGE in $REQUIRED_PACKAGES; do
+  pip3 show $PACKAGE > /dev/null 2>&1 || pip3 install $PACKAGE
+done
+
+# Optional: Verify the Python environment
+echo "Python version:"
+python3 --version
+echo "Installed packages:"
+pip3 list | grep -E "pandas|numpy|scipy|tqdm|networkx|python-louvain"
+
+# Run the Python script
+echo "Running wasserstein_indiv_network_1_7.py..."
+python3 /u/home/j/jia/mice_colon/wasserstein_network/wasserstein_indiv_network_1_7.py
+
+# Check for errors during execution
+if [ $? -ne 0 ]; then
+  echo "Job $JOB_ID failed on:   " `hostname -s`
+  echo "Job $JOB_ID failed on:   " `date`
+  echo "Please check the log file for details: joblog.$JOB_ID"
+  exit 1
+fi
+
+# Print job end information
+echo "Job $JOB_ID completed successfully on:   " `hostname -s`
+echo "Job $JOB_ID ended on:   " `date`
+```
+
+
+
+Then, submit the job to the cluster using the following command:
+
+```{bash}
+#| eval: false
+
+# make the .sh file executable
+chmod +x hoffman2_indiv_network.sh
+
+# run the .sh file directly
+./organize_wasserstein.sh
+
+# before submitting the job, make sure the .sh file is executable and 
+# request enough resources the resources requested not necessarily 
+# the same as the ones in the .sh file if you're going to 
+# use `qsub` submission script, but if you're going to use `qrsh` 
+# then you need to request the resources in the .sh file
+qrsh -l h_rt=4:00:00,h_data=4G
+
+module load python/3.9.6
+
+# go to the directory where the .sh file is located
+cd /u/home/j/jia/mice_colon/indiv_network
+
+qsub hoffman2_indiv_network.sh
+```
+
+After submitting the job, you can check the status of the job using the following command:
+
+```{bash}
+#| eval: false
+
+# check the log file for the job
+# in the run directory
+ls -lh
+cat joblog.<job_id>
+
+
+# check the status of your own jobs
+qstat -u $USER
+
+# or check the status of all jobs
+qstat
+
+# or check the status of a specific job
+qstat <job_id>
+
+# or check the status of all jobs in a queue
+qstat -q
+
+# or check the status of all jobs in a queue with more details
+qstat -g c
+
+# or check the status of all jobs in a queue with even more details
+qstat -g t
+
+# or check the status of all jobs in a queue with the most details
+qstat -f
+
+# or check the status of all jobs in a queue with the most details and filter by user
+qstat -f -u $USER
+```
+
+If the storage is full, you can delete the files that are not needed using the following command:
+
+```{bash}
+#| eval: false
+
+# Ensure you have sufficient disk space and are not exceeding your quota on Hoffman2
+quota -v
+```
+quota output indicates that you have exceeded your disk usage quota on several filesystems. The * next to the blocks column confirms that you are over quota 
+
+```{bash}
+#| eval: false
+# Check your disk usage
+du -sh /u/home/j/jia/mice_colon/indiv_network
+
+# Check your home directory for large or unnecessary files
+du -sh /u/home/j/jia/* | sort -h
+du -sh /u/home/j/jia/mice_colon/indiv_network/* | sort -h
+
+# Delete files that are no longer needed
+rm /u/home/j/jia/mice_colon/indiv_network/output/individual_network_results_1_12.csv
+
+# Delete a directory
+rm -r /u/home/j/jia/mice_colon/indiv_network/output
+
+# Check your disk usage again
+du -sh /u/home/j/jia/mice_colon/indiv_network
+
+```
+
+Run code on Jupyter notebook: (run this command on local machine)
+
+
+```{bash}
+#| eval: false
+
+# run the command
+./h2jupynb -u jia -t 24 -m 10  # -t runtime in hours, -m memory in GB per core
+
+# check the help message
+./h2jupynb --help
+```
+
+h2jupynb [-u <Hoffman2 user name>] [-v <python-version>]
+         [-t <time, integer number of hours>] [-m <memory, integer number of GB per core>]
+         [-e <parallel environment: 1 for shared, 2 for distributed>] [-s <number of slots>]
+         [-o <run on group owned nodes: yes/no>] [-x <run on an exclusively reserved node: yes/no>]
+         [-a <CPU-type>] [-d <path to directory from which the jupyter NB/lab will start>]
+         [-g <run on a gpu node: yes/no>] [-c <gpu-card-type>] [-l <cuda-version>]
+         [-p <port number>]  [-j <conda virtual environment name>]
+         [-k <path/to/python/virtual-env>]
+         [-b <comma separated list of environmental modules>]
+         [-z <write ssh debug files?:yes/no>]
