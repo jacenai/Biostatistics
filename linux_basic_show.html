@@ -3082,6 +3082,7 @@ vertical-align: -.125em;
   <li><a href="#more-fun-with-linux" id="toc-more-fun-with-linux" class="nav-link" data-scroll-target="#more-fun-with-linux">More fun with Linux</a></li>
   <li><a href="#book" id="toc-book" class="nav-link" data-scroll-target="#book">Book</a></li>
   <li><a href="#notes-on-usage-of-hoffman2" id="toc-notes-on-usage-of-hoffman2" class="nav-link" data-scroll-target="#notes-on-usage-of-hoffman2">Notes on Usage of Hoffman2</a></li>
+  <li><a href="#create-a-permanent-library-for-r-on-hoffman2" id="toc-create-a-permanent-library-for-r-on-hoffman2" class="nav-link" data-scroll-target="#create-a-permanent-library-for-r-on-hoffman2">Create a permanent library for R on Hoffman2:</a></li>
   </ul>
 </nav>
 </div>
@@ -3136,10 +3137,10 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 loaded via a namespace (and not attached):
- [1] htmlwidgets_1.6.4 compiler_4.3.1    fastmap_1.2.0     cli_3.6.2        
+ [1] htmlwidgets_1.6.4 compiler_4.3.1    fastmap_1.2.0     cli_3.6.4        
  [5] tools_4.3.1       htmltools_0.5.8.1 rstudioapi_0.16.0 yaml_2.3.8       
  [9] rmarkdown_2.27    knitr_1.47        jsonlite_1.8.8    xfun_0.44        
-[13] digest_0.6.35     rlang_1.1.4       evaluate_0.23    </code></pre>
+[13] digest_0.6.35     rlang_1.1.5       evaluate_0.23    </code></pre>
 </div>
 </div>
 <section id="data-ethics-training" class="level2">
@@ -3172,7 +3173,7 @@ loaded via a namespace (and not attached):
 -rw-rw-r--@  1 jacenai  staff  13332 Jan  5  2023 CHANGELOG.txt
 -rw-rw-r--@  1 jacenai  staff   2518 Jan  5  2023 LICENSE.txt
 -rw-rw-r--@  1 jacenai  staff   2884 Jan  6  2023 SHA256SUMS.txt
-drwxr-xr-x@ 27 jacenai  staff    864 Jan 30 17:44 hosp
+drwxr-xr-x@ 28 jacenai  staff    896 Mar  7 11:41 hosp
 drwxr-xr-x@ 13 jacenai  staff    416 Mar  9  2024 icu
 lrwxr-xr-x@  1 jacenai  staff     49 Jan 24  2024 mimic-iv-2.2 -&gt; /Users/jacenai/Desktop/BIOSTAT_203B/mimic-iv-2.2/</code></pre>
 </div>
@@ -3184,7 +3185,7 @@ lrwxr-xr-x@  1 jacenai  staff     49 Jan 24  2024 mimic-iv-2.2 -&gt; /Users/jace
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-l</span> ~/mimic/hosp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>total 8970344
+<pre><code>total 22181736
 -rw-rw-r--@ 1 jacenai  staff    15516088 Jan  5  2023 admissions.csv.gz
 -rw-rw-r--@ 1 jacenai  staff      427468 Jan  5  2023 d_hcpcs.csv.gz
 -rw-rw-r--@ 1 jacenai  staff      859438 Jan  5  2023 d_icd_diagnoses.csv.gz
@@ -3195,6 +3196,7 @@ lrwxr-xr-x@  1 jacenai  staff     49 Jan 24  2024 mimic-iv-2.2 -&gt; /Users/jace
 -rw-rw-r--@ 1 jacenai  staff   508524623 Jan  5  2023 emar.csv.gz
 -rw-rw-r--@ 1 jacenai  staff   471096030 Jan  5  2023 emar_detail.csv.gz
 -rw-rw-r--@ 1 jacenai  staff     1767138 Jan  5  2023 hcpcsevents.csv.gz
+-rw-r--r--@ 1 jacenai  staff  6757482496 Mar  7 11:41 labevents.csv
 -rw-rw-r--@ 1 jacenai  staff  1939088924 Jan  5  2023 labevents.csv.gz
 drwxr-xr-x@ 3 jacenai  staff          96 Feb 28  2024 labevents.parquet
 -rw-r--r--@ 1 jacenai  staff    56623104 Feb  9  2024 labevents_filtered.csv.gz
@@ -3416,7 +3418,7 @@ Number of lines in /Users/jacenai/mimic/hosp/patients.csv.gz:   299713</code></p
 <span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-lh</span> ~/mimic/hosp/labevents.csv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>-rw-rw-r--@ 1 jacenai  staff   1.8G Jan  5  2023 /Users/jacenai/mimic/hosp/labevents.csv.gz
--rw-r--r--@ 1 jacenai  staff    13G Jan 30 18:24 /Users/jacenai/mimic/hosp/labevents.csv</code></pre>
+-rw-r--r--@ 1 jacenai  staff    13G Mar  7 11:48 /Users/jacenai/mimic/hosp/labevents.csv</code></pre>
 </div>
 </div>
 <p>Then, <strong>comparing the run times:</strong> From the output below, in general, the run time of <code>zcat</code> on the compressed file is more than the run time of <code>wc</code> on the uncompressed file.</p>
@@ -3429,14 +3431,14 @@ Number of lines in /Users/jacenai/mimic/hosp/patients.csv.gz:   299713</code></p
 <div class="cell-output cell-output-stdout">
 <pre><code> 118171368
 
-real    0m14.343s
-user    0m22.284s
-sys 0m1.534s
+real    0m14.225s
+user    0m21.149s
+sys 0m1.746s
  118171368 /Users/jacenai/mimic/hosp/labevents.csv
 
-real    0m13.915s
-user    0m12.219s
-sys 0m1.378s</code></pre>
+real    0m15.821s
+user    0m12.971s
+sys 0m1.808s</code></pre>
 </div>
 </div>
 <p><strong>Trade-off between storage and speed:</strong> compressed files save storage space but may require additional time for decompression during access. Uncompressed files provide faster access but consume more storage space. If storage space is a critical concern and access speed can be tolerated, compression is beneficial. However, if rapid access is crucial and storage space is not a limiting factor, using uncompressed files might be preferred.</p>
@@ -3559,14 +3561,14 @@ Language: English
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cal</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>    January 2025      
+<pre><code>     March 2025       
 Su Mo Tu We Th Fr Sa  
-          1  2  3  4  
- 5  6  7  8  9 10 11  
-12 13 14 15 16 17 18  
-19 20 21 22 23 24 25  
-26 27 28 29 30 31     
-                      </code></pre>
+                   1  
+ 2  3  4  5  6  7  8  
+ 9 10 11 12 13 14 15  
+16 17 18 19 20 21 22  
+23 24 25 26 27 28 29  
+30 31                 </code></pre>
 </div>
 </div>
 <p><code>cal</code>: displays the current month’s calendar.</p>
@@ -3629,14 +3631,14 @@ Su Mo Tu We Th Fr Sa
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">date</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Thu Jan 30 18:24:35 PST 2025</code></pre>
+<pre><code>Fri Mar  7 11:49:15 PST 2025</code></pre>
 </div>
 </div>
 <p><code>date</code>: Prints the current date and time.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb58"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hostname</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Jacens-MacBook-Air.local</code></pre>
+<pre><code>wifi-131-179-54-183.host.ucla.edu</code></pre>
 </div>
 </div>
 <p><code>hostname</code>: prints the hostname of the server that I’m currently logged into.</p>
@@ -3650,37 +3652,43 @@ Su Mo Tu We Th Fr Sa
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb62"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">uname</span> <span class="at">-a</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Darwin Jacens-MacBook-Air.local 23.6.0 Darwin Kernel Version 23.6.0: Mon Jul 29 21:16:46 PDT 2024; root:xnu-10063.141.2~1/RELEASE_ARM64_T8112 arm64</code></pre>
+<pre><code>Darwin wifi-131-179-54-183.host.ucla.edu 23.6.0 Darwin Kernel Version 23.6.0: Mon Jul 29 21:16:46 PDT 2024; root:xnu-10063.141.2~1/RELEASE_ARM64_T8112 arm64</code></pre>
 </div>
 </div>
 <p><code>uname -a</code> command in Linux is used to display detailed information about the system’s kernel and hardware. It provides a comprehensive set of details about the system, including the kernel name, network node hostname, kernel release, kernel version, machine hardware name, processor type, hardware platform, and the operating system. In my case, the kernel name is “Darwin,” and the network node hostname is “s-169-232-81-195.resnet.ucla.edu.” The kernel release, version 22.4.0, indicates the specific version of the Darwin kernel. The timestamp “Mon Mar 6 21:01:02 PST 2023” denotes when the kernel was built.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb64"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">uptime</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>18:24  up 44 mins, 1 user, load averages: 2.74 2.23 2.67</code></pre>
+<pre><code>11:49  up 21:57, 4 users, load averages: 4.15 3.22 2.76</code></pre>
 </div>
 </div>
 <p><code>uptime</code> command in Linux is used to display the current time, how long the system has been running, and information about the system’s load averages. It provides a quick overview of the system’s status and activity.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb66"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">who</span> am i</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>jacenai                       Jan 30 18:24 </code></pre>
+<pre><code>jacenai                       Mar  7 11:49 </code></pre>
 </div>
 </div>
 <p><code>who am i</code> command in Linux is used to display information about the current user who is logged into the system. It provides details such as the username and the time the user logged in. In my case, the username is “jacenai,” and the time the user logged in is “Jan 24 10:11”</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb68"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">who</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>jacenai          console      Jan 30 17:40 </code></pre>
+<pre><code>jacenai          console      Mar  6 13:52 
+jacenai          ttys000      Mar  7 09:44 
+jacenai          ttys001      Mar  7 10:33 
+jacenai          ttys002      Mar  7 11:40 </code></pre>
 </div>
 </div>
 <p><code>who</code> command displays information about currently logged-in users. It provides details such as the username, terminal, login time</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb70"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">w</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>18:24  up 44 mins, 1 user, load averages: 2.74 2.23 2.67
+<pre><code>11:49  up 21:57, 4 users, load averages: 4.15 3.22 2.76
 USER       TTY      FROM    LOGIN@  IDLE WHAT
-jacenai    console  -      17:40      43 -</code></pre>
+jacenai    console  -      Thu13   21:56 -
+jacenai    s000     -       9:44    2:00 ssh -o ServerAliveCountMax=5 -o IPQoS=
+jacenai    s001     -      10:33       8 ssh jia@hoffman2.idre.ucla.edu
+jacenai    s002     -      11:40       7 ssh -N -L 8787:n1826:8787 jia@hoffman2</code></pre>
 </div>
 </div>
 <p><code>w</code> command displays information about the currently logged-in users and their activities. It provides a summary of user-related information, including details about each user’s login session, the time they’ve been idle, and the commands they are currently running.</p>
@@ -3694,16 +3702,16 @@ jacenai    console  -      17:40      43 -</code></pre>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb74"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">last</span> <span class="kw">|</span> <span class="fu">head</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>jacenai    ttys000                         Thu Jan 30 17:51 - 17:51  (00:00)
-jacenai    ttys000                         Thu Jan 30 17:47 - 17:47  (00:00)
-jacenai    ttys001                         Thu Jan 30 17:45 - 17:45  (00:00)
-jacenai    ttys000                         Thu Jan 30 17:40 - 17:40  (00:00)
-jacenai    console                         Thu Jan 30 17:40   still logged in
-reboot time                                Thu Jan 30 17:40
-jacenai    ttys000                         Thu Jan 30 17:35 - 17:35  (00:00)
-jacenai    ttys001                         Thu Jan 30 15:14 - 15:14  (00:00)
-jacenai    ttys006                         Thu Jan 30 14:46 - 14:46  (00:00)
-jacenai    ttys001                         Thu Jan 30 14:42 - 14:42  (00:00)</code></pre>
+<pre><code>jacenai    ttys002                         Fri Mar  7 11:40   still logged in
+jacenai    ttys002                         Fri Mar  7 11:02 - 11:02  (00:00)
+jacenai    ttys001                         Fri Mar  7 10:33   still logged in
+jacenai    ttys000                         Fri Mar  7 09:44   still logged in
+jacenai    ttys001                         Thu Mar  6 21:37 - 21:37  (00:00)
+jacenai    ttys000                         Thu Mar  6 20:55 - 20:55  (00:00)
+jacenai    console                         Thu Mar  6 13:52   still logged in
+reboot time                                Thu Mar  6 13:52
+shutdown time                              Thu Mar  6 13:52
+jacenai    ttys003                         Tue Mar  4 21:00 - 21:00  (00:00)</code></pre>
 </div>
 </div>
 <p><code>last</code> command in Linux is used to display information about previously logged-in users, including their login and logout times. When combined with the <code>head</code> command, it limits the output to the specified 10 newest lines.</p>
@@ -4172,16 +4180,127 @@ sys 0m0.001s</code></pre>
 <span id="cb94-4"><a href="#cb94-4" aria-hidden="true" tabindex="-1"></a><span class="co"># check the help message</span></span>
 <span id="cb94-5"><a href="#cb94-5" aria-hidden="true" tabindex="-1"></a><span class="ex">./h2jupynb</span> <span class="at">--help</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<!-- h2jupynb [-u <Hoffman2 user name>] [-v <python-version>]  -->
-<!--          [-t <time, integer number of hours>] [-m <memory, integer number of GB per core>]  -->
-<!--          [-e <parallel environment: 1 for shared, 2 for distributed>] [-s <number of slots>]  -->
-<!--          [-o <run on group owned nodes: yes/no>] [-x <run on an exclusively reserved node: yes/no>]   -->
-<!--          [-a <CPU-type>] [-d <path to directory from which the jupyter NB/lab will start>]  -->
-<!--          [-g <run on a gpu node: yes/no>] [-c <gpu-card-type>] [-l <cuda-version>]  -->
-<!--          [-p <port number>]  [-j <conda virtual environment name>] -->
-<!--          [-k <path/to/python/virtual-env>]  -->
-<!--          [-b <comma separated list of environmental modules>] -->
-<!--          [-z <write ssh debug files?:yes/no>] -->
+<p>h2jupynb [-u <hoffman2 user name>] [-v <python-version>] [-t &lt;time, integer number of hours&gt;] [-m &lt;memory, integer number of GB per core&gt;] [-e &lt;parallel environment: 1 for shared, 2 for distributed&gt;] [-s <number of slots>] [-o <run on group owned nodes: yes no>] [-x <run on an exclusively reserved node: yes no>] [-a <cpu-type>] [-d <path to directory from which the jupyter nb lab will start>] [-g <run on a gpu node: yes no>] [-c <gpu-card-type>] [-l <cuda-version>] [-p <port number>] [-j <conda virtual environment name>] [-k <path to python virtual-env>] [-b <comma separated list of environmental modules>] [-z &lt;write ssh debug files?:yes/no&gt;].</comma></path></conda></port></cuda-version></gpu-card-type></run></path></cpu-type></run></run></number></python-version></hoffman2></p>
+<p>How to reconnect to a Jupyter notebook session on Hoffman2:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb95"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="co"># First, get the information of the running Jupyter notebook </span></span>
+<span id="cb95-2"><a href="#cb95-2" aria-hidden="true" tabindex="-1"></a><span class="co"># run this on Hoffman2</span></span>
+<span id="cb95-3"><a href="#cb95-3" aria-hidden="true" tabindex="-1"></a><span class="ex">qstat</span> <span class="at">-u</span> <span class="va">$USER</span></span>
+<span id="cb95-4"><a href="#cb95-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-5"><a href="#cb95-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Knowing the job ID</span></span>
+<span id="cb95-6"><a href="#cb95-6" aria-hidden="true" tabindex="-1"></a><span class="ex">qstat</span> <span class="at">-j</span> 7164149</span>
+<span id="cb95-7"><a href="#cb95-7" aria-hidden="true" tabindex="-1"></a><span class="ex">qstat</span> <span class="at">-j</span> <span class="op">&lt;</span>job_id<span class="op">&gt;</span></span>
+<span id="cb95-8"><a href="#cb95-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-9"><a href="#cb95-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Find the information at the bottom of the output: </span></span>
+<span id="cb95-10"><a href="#cb95-10" aria-hidden="true" tabindex="-1"></a><span class="co"># exec_host_list        1:    n7361:1</span></span>
+<span id="cb95-11"><a href="#cb95-11" aria-hidden="true" tabindex="-1"></a><span class="co"># n7361 is the exec host where the Jupyter notebook is running on Hoffman2</span></span>
+<span id="cb95-12"><a href="#cb95-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-13"><a href="#cb95-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-14"><a href="#cb95-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Second, ssh to the exec host # ssh means secure shell</span></span>
+<span id="cb95-15"><a href="#cb95-15" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> jia@n7361</span>
+<span id="cb95-16"><a href="#cb95-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> jia@<span class="op">&lt;</span>exec_host<span class="op">&gt;</span></span>
+<span id="cb95-17"><a href="#cb95-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-18"><a href="#cb95-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the Appropriate Python Module</span></span>
+<span id="cb95-19"><a href="#cb95-19" aria-hidden="true" tabindex="-1"></a><span class="co"># For instance, you can load the Anaconda module, which comes with Jupyter Notebook pre-installed.</span></span>
+<span id="cb95-20"><a href="#cb95-20" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load anaconda3/2020.11</span>
+<span id="cb95-21"><a href="#cb95-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-22"><a href="#cb95-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify the Jupyter Installation</span></span>
+<span id="cb95-23"><a href="#cb95-23" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyter</span> <span class="at">--version</span></span>
+<span id="cb95-24"><a href="#cb95-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-25"><a href="#cb95-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Start the Jupyter Notebook Server</span></span>
+<span id="cb95-26"><a href="#cb95-26" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyter</span> notebook <span class="at">--no-browser</span> <span class="at">--ip</span><span class="op">=</span>0.0.0.0 <span class="at">--port</span><span class="op">=</span>8692</span>
+<span id="cb95-27"><a href="#cb95-27" aria-hidden="true" tabindex="-1"></a><span class="co"># This command starts the Jupyter Notebook server, listening on all IP addresses (0.0.0.0) and on the specified port (8692) on my local machine.</span></span>
+<span id="cb95-28"><a href="#cb95-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-29"><a href="#cb95-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-30"><a href="#cb95-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-31"><a href="#cb95-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Finally on your local machine, run the following command to connect to the Jupyter notebook</span></span>
+<span id="cb95-32"><a href="#cb95-32" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> <span class="at">-L</span> 8692:n7361:8692 jia@hoffman2.idre.ucla.edu</span>
+<span id="cb95-33"><a href="#cb95-33" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> <span class="at">-L</span> <span class="op">&lt;</span>local_port<span class="op">&gt;</span>:<span class="op">&lt;</span>exec_host<span class="op">&gt;</span>:<span class="op">&lt;</span>exec_host_port<span class="op">&gt;</span> <span class="op">&lt;</span>username<span class="op">&gt;</span>@hoffman2.idre.ucla.edu</span>
+<span id="cb95-34"><a href="#cb95-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-35"><a href="#cb95-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Open a web browser and navigate to the following URL:</span></span>
+<span id="cb95-36"><a href="#cb95-36" aria-hidden="true" tabindex="-1"></a><span class="ex">http://localhost:8692</span></span>
+<span id="cb95-37"><a href="#cb95-37" aria-hidden="true" tabindex="-1"></a><span class="ex">http://localhost:</span><span class="op">&lt;</span>local_port<span class="op">&gt;</span></span>
+<span id="cb95-38"><a href="#cb95-38" aria-hidden="true" tabindex="-1"></a><span class="co"># This URL connects to the Jupyter Notebook server running on the exec host through the SSH tunnel.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="create-a-permanent-library-for-r-on-hoffman2" class="level2">
+<h2 class="anchored" data-anchor-id="create-a-permanent-library-for-r-on-hoffman2">Create a permanent library for R on Hoffman2:</h2>
+<p>When you install an R package in RStudio, it typically goes to:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="co"># in R, run this command</span></span>
+<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a><span class="fu">.libPaths</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Creating a Permanent R Library Directory.</p>
+<p>Step 1:</p>
+<p>Choose a location where you want to store R packages permanently:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb97"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="co"># bash command</span></span>
+<span id="cb97-2"><a href="#cb97-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb97-3"><a href="#cb97-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Choose a location where you want to store R packages permanently:</span></span>
+<span id="cb97-4"><a href="#cb97-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="va">$HOME</span>/R/library</span>
+<span id="cb97-5"><a href="#cb97-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb97-6"><a href="#cb97-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Or, if you prefer scratch storage (faster, but not backed up):</span></span>
+<span id="cb97-7"><a href="#cb97-7" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="va">$SCRATCH</span>/R/library</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Step 2:</p>
+<p>Run RStudio inside the container</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="co"># bash command</span></span>
+<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb98-3"><a href="#cb98-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Request an interactive job:</span></span>
+<span id="cb98-4"><a href="#cb98-4" aria-hidden="true" tabindex="-1"></a><span class="ex">qrsh</span> <span class="at">-l</span> h_rt=4:00:00,h_data=4G</span>
+<span id="cb98-5"><a href="#cb98-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb98-6"><a href="#cb98-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the apptainer module:</span></span>
+<span id="cb98-7"><a href="#cb98-7" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load apptainer</span>
+<span id="cb98-8"><a href="#cb98-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb98-9"><a href="#cb98-9" aria-hidden="true" tabindex="-1"></a><span class="co"># set the R_LIBS_USER environment variable to the location you chose in Step 1:</span></span>
+<span id="cb98-10"><a href="#cb98-10" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">R_LIBS_USER</span><span class="op">=</span><span class="va">$HOME</span>/R/library</span>
+<span id="cb98-11"><a href="#cb98-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb98-12"><a href="#cb98-12" aria-hidden="true" tabindex="-1"></a><span class="co"># You can replace export RSTUDIO_VERSION=4.1.0 with any Rstudio version available on Hoffman2</span></span>
+<span id="cb98-13"><a href="#cb98-13" aria-hidden="true" tabindex="-1"></a><span class="co"># This will display information and an ssh -L ... command to run in a separate terminal.</span></span>
+<span id="cb98-14"><a href="#cb98-14" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">RSTUDIO_VERSION</span><span class="op">=</span>4.1.0</span>
+<span id="cb98-15"><a href="#cb98-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb98-16"><a href="#cb98-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Then, launch RStudio:</span></span>
+<span id="cb98-17"><a href="#cb98-17" aria-hidden="true" tabindex="-1"></a><span class="ex">apptainer</span> run <span class="at">-B</span> <span class="va">$SCRATCH</span>/rstudiotmp/var/lib:/var/lib/rstudio-server <span class="dt">\</span></span>
+<span id="cb98-18"><a href="#cb98-18" aria-hidden="true" tabindex="-1"></a>              <span class="at">-B</span> <span class="va">$SCRATCH</span>/rstudiotmp/var/run:/var/run/rstudio-server <span class="dt">\</span></span>
+<span id="cb98-19"><a href="#cb98-19" aria-hidden="true" tabindex="-1"></a>              <span class="at">-B</span> <span class="va">$SCRATCH</span>/rstudiotmp/tmp:/tmp <span class="dt">\</span></span>
+<span id="cb98-20"><a href="#cb98-20" aria-hidden="true" tabindex="-1"></a>              <span class="va">$H2_CONTAINER_LOC</span>/h2-rstudio_<span class="va">${RSTUDIO_VERSION}</span>.sif</span>
+<span id="cb98-21"><a href="#cb98-21" aria-hidden="true" tabindex="-1"></a>              </span>
+<span id="cb98-22"><a href="#cb98-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Connect to the compute node&#39;s port:</span></span>
+<span id="cb98-23"><a href="#cb98-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Open a another new SSH tunnel on your local computer by running:</span></span>
+<span id="cb98-24"><a href="#cb98-24" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span>  <span class="at">-L</span> 8787:nXXX:8787 username@hoffman2.idre.ucla.edu <span class="co"># Or whatever command was displayed earlier </span></span>
+<span id="cb98-25"><a href="#cb98-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Access RStudio in your web browser:</span></span>
+<span id="cb98-26"><a href="#cb98-26" aria-hidden="true" tabindex="-1"></a><span class="ex">http://localhost:8787</span> <span class="co">#or whatever port number that was displayed</span></span>
+<span id="cb98-27"><a href="#cb98-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb98-28"><a href="#cb98-28" aria-hidden="true" tabindex="-1"></a><span class="co"># exit Rstudio, run</span></span>
+<span id="cb98-29"><a href="#cb98-29" aria-hidden="true" tabindex="-1"></a><span class="ex">[CTRL-C]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Alternative: Use Environment Variables in RStudio</p>
+<p>Step 1:</p>
+<p>Running RStudio: Automated Script</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb99"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./h2_rstudio.sh</span> <span class="at">-u</span> H2USERNAME</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This will start RStudio as a <code>qrsh</code> job, open a port tunnel, and allow you to access RStudio in your web browser.</p>
+<p>Step 2:</p>
+<p>Set the Library Path in RStudio.</p>
+<p>Once RStudio is running inside the container, open the R console and run:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="fu">.libPaths</span>(<span class="fu">c</span>(<span class="st">&quot;~/R/library&quot;</span>, <span class="fu">.libPaths</span>()))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This tells R to first check your home directory (~/R/library) before using the default container library.</p>
+<p>To make this permanent, add this to your .Rprofile in your home directory:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&#39;.libPaths(c(&quot;~/R/library&quot;, .libPaths()))</span><span class="sc">\n</span><span class="st">&#39;</span>, <span class="at">file =</span> <span class="st">&quot;~/.Rprofile&quot;</span>, <span class="at">append =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb101-3"><a href="#cb101-3" aria-hidden="true" tabindex="-1"></a><span class="co"># You can verify the installation location using:</span></span>
+<span id="cb101-4"><a href="#cb101-4" aria-hidden="true" tabindex="-1"></a><span class="fu">.libPaths</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Step 3:</p>
+<p>Install Packages to the Permanent Directory</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;ggplot2&quot;</span>, <span class="at">lib=</span><span class="st">&quot;~/R/library&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 
 </main>
